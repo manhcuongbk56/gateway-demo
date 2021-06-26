@@ -1,21 +1,20 @@
-package com.demo.httpserver.message;
+package com.demo.common.message;
 
 
-import com.demo.httpserver.constant.ResponseCode;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import com.demo.common.constant.ResponseCode;
+import lombok.*;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
 @Builder(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
+@NoArgsConstructor
 public class StockPriceResponse {
     private UUID requestId;
     private String responseCode;
     private String stockItemName;
-    private BigDecimal stockPrice;
+    private long stockPrice;
 
     public static StockPriceResponse fail(GetStockPriceRequest request){
         return  StockPriceResponse.builder()
@@ -24,7 +23,7 @@ public class StockPriceResponse {
                 .build();
     }
 
-    public static StockPriceResponse success(GetStockPriceRequest request, BigDecimal stockPrice){
+    public static StockPriceResponse success(GetStockPriceRequest request, long stockPrice){
         return  StockPriceResponse.builder()
                 .requestId(request.getRequestId())
                 .stockPrice(stockPrice)

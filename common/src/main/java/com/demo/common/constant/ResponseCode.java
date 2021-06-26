@@ -1,4 +1,4 @@
-package com.demo.httpserver.constant;
+package com.demo.common.constant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
