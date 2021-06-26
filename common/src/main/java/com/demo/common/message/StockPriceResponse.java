@@ -14,7 +14,7 @@ public class StockPriceResponse {
     private UUID requestId;
     private String responseCode;
     private String stockItemName;
-    private long stockPrice;
+    private double stockPrice;
 
     public static StockPriceResponse fail(GetStockPriceRequest request){
         return  StockPriceResponse.builder()
@@ -23,7 +23,7 @@ public class StockPriceResponse {
                 .build();
     }
 
-    public static StockPriceResponse success(GetStockPriceRequest request, long stockPrice){
+    public static StockPriceResponse success(GetStockPriceRequest request, double stockPrice){
         return  StockPriceResponse.builder()
                 .requestId(request.getRequestId())
                 .stockPrice(stockPrice)

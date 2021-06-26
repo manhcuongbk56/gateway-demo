@@ -9,19 +9,20 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import lombok.extern.log4j.Log4j2;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 @ChannelHandler.Sharable
 public class ResponseEncodeHandler extends MessageToByteEncoder<StockPriceResponse> {
 
-
+    private static byte[] ID_PADDING = new byte[24];
 
     @Override
     protected void encode(ChannelHandlerContext ctx, StockPriceResponse msg, ByteBuf out) throws Exception {
         out.writeLong(msg.getRequestId().getMostSignificantBits());
         out.writeLong(msg.getRequestId().getLeastSignificantBits());
+        out.writeBytes(ID_PADDING);
         out.writeByte('|');
         out.writeBytes(msg.getResponseCode().getBytes(StandardCharsets.UTF_8));
         if (Objects.equals(msg.getResponseCode(), ResponseCode.FAIL.getCode())){
@@ -29,8 +30,11 @@ public class ResponseEncodeHandler extends MessageToByteEncoder<StockPriceRespon
         }
         out.writeByte('|');
         var nameRealBytes = msg.getStockItemName().getBytes(StandardCharsets.UTF_8);
+        var padding = new byte[20 - nameRealBytes.length];
+        Arrays.fill(padding, (byte) ' ');
         out.writeBytes(nameRealBytes);
+        out.writeBytes(padding);
         out.writeByte('|');
-        out.writeLong(msg.getStockPrice());
+        out.writeDouble(msg.getStockPrice());
     }
 }

@@ -41,7 +41,7 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
-                            ch.pipeline().addLast(new FixedLengthFrameDecoder(42));
+                            ch.pipeline().addLast(new FixedLengthFrameDecoder(66));
                             ch.pipeline().addLast("decoder", new RequestDecoderHandler());
                             ch.pipeline().addLast("encoder", new  ResponseEncodeHandler());
                             ch.pipeline().addLast("gateway", messageHandler);

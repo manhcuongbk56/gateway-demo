@@ -25,7 +25,7 @@ public class SimpleController {
             if (number < 1) {
                 return StockPriceResponse.fail(request);
             }
-            return StockPriceResponse.success(request, 10L);
+            return StockPriceResponse.success(request, 20.5d);
         } catch (InterruptedException e) {
             return StockPriceResponse.fail(request);
         }

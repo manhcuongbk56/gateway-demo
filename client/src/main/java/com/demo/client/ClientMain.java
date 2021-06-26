@@ -8,6 +8,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.log4j.Log4j2;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.UUID;
 
 @Log4j2
@@ -15,10 +16,13 @@ public class ClientMain {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 6969;
     private static int numOfClient = 200;
+    private static byte[] ID_PADDING = new byte[24];
 
     public static void main(String[] args) {
 
         var clientHandler = new ClientHandler();
+
+
 
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -59,12 +63,18 @@ public class ClientMain {
             var requestId = UUID.randomUUID();
             request.writeLong(requestId.getMostSignificantBits());
             request.writeLong(requestId.getLeastSignificantBits());
+            request.writeBytes(ID_PADDING);
             request.writeByte('|');
             for (int i = 0; i < 4; i++){
                 request.writeByte(' ');
             }
             request.writeByte('|');
-            request.writeBytes("stockItem ToTestTest".getBytes(StandardCharsets.UTF_8));
+            var stockName = "ABC";
+            var stockNameBytes = stockName.getBytes(StandardCharsets.UTF_8);
+            var padding = new byte[20 - stockNameBytes.length];
+            Arrays.fill(padding, (byte) ' ');
+            request.writeBytes(stockNameBytes);
+            request.writeBytes(padding);
             ch.writeAndFlush(request);
         }
         log.info("Done send request to server");
