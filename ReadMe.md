@@ -1,5 +1,6 @@
 # A Demo gateway written in Java using Netty
-To run this app, you need install Java 11, Maven
+To run this app, you need install Java 11, Maven. Run these app belows as:
+Simpler server -> gateway -> client
 ## Simple server
 Using Spring boot, accept http request and just return the response with error rate is 10%. Run on default port 8080.
 ## Gateway
