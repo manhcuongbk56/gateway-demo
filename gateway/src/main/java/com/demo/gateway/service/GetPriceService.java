@@ -12,6 +12,8 @@ import static com.demo.gateway.util.JsonUtils.MAPPER;
 
 public class GetPriceService {
 
+    public static final String PRICE_URL = "http://localhost:8080/price";
+
     OkHttpClient client = new OkHttpClient();
 
     public static final MediaType JSON
@@ -25,7 +27,7 @@ public class GetPriceService {
             return CompletableFuture.failedFuture(e);
         }
         Request request = new Request.Builder()
-                .url("http://localhost:8080/price")
+                .url(PRICE_URL)
                 .post(RequestBody.create(JSON, body))
                 .build();
         Call call = client.newCall(request);

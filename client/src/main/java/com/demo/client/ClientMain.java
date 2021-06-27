@@ -15,7 +15,7 @@ import java.util.UUID;
 public class ClientMain {
     private static final String SERVER_IP = "localhost";
     private static final int SERVER_PORT = 6969;
-    private static int numOfClient = 200;
+    private static int NUM_OF_CLIENT = 200;
     private static byte[] ID_PADDING = new byte[24];
 
     public static void main(String[] args) {
@@ -37,14 +37,14 @@ public class ClientMain {
                     ch.pipeline().addLast(clientHandler);
                 }
             });
-            var channels = new Channel[numOfClient];
+            var channels = new Channel[NUM_OF_CLIENT];
             try {
-                for (int i = 0; i < numOfClient; i++){
+                for (int i = 0; i < NUM_OF_CLIENT; i++){
                     var f = bootstrap.connect(SERVER_IP, SERVER_PORT).sync();
                     // Wait until the connection is closed.
                     channels[i] = f.channel();
                 }
-                for (int i = 0; i < numOfClient; i++){
+                for (int i = 0; i < NUM_OF_CLIENT; i++){
                     sendRequest(channels[i]);
                 }
                 channels[0].closeFuture().sync();
