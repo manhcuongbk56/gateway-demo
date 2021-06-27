@@ -13,10 +13,10 @@ import java.util.UUID;
 
 @Log4j2
 public class ClientMain {
-    private static final String SERVER_IP = "localhost";
-    private static final int SERVER_PORT = 6969;
-    private static int NUM_OF_CLIENT = 200;
-    private static byte[] ID_PADDING = new byte[24];
+    private static final String GATEWAY_SERVER_HOST = "localhost";
+    private static final int GATEWAY_SERVER_PORT = 6969;
+    private static final int NUM_OF_CLIENT = 200;
+    private static final byte[] ID_PADDING = new byte[24];
 
     public static void main(String[] args) {
 
@@ -40,7 +40,7 @@ public class ClientMain {
             var channels = new Channel[NUM_OF_CLIENT];
             try {
                 for (int i = 0; i < NUM_OF_CLIENT; i++){
-                    var f = bootstrap.connect(SERVER_IP, SERVER_PORT).sync();
+                    var f = bootstrap.connect(GATEWAY_SERVER_HOST, GATEWAY_SERVER_PORT).sync();
                     // Wait until the connection is closed.
                     channels[i] = f.channel();
                 }

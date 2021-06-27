@@ -20,8 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 @Log4j2
 public class NettyServer {
-    private static final int SERVER_PORT = 6969;
-    private static final String HOST = "localhost";
+    private static final int GATEWAY_PORT = 6969;
+    private static final String GATEWAY_HORT = "localhost";
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup(10);
     private MessageHandler messageHandler = new MessageHandler();
@@ -32,7 +32,7 @@ public class NettyServer {
             serverBootstrap
                     .group(boss, work)
                     .channel(NioServerSocketChannel.class)
-                    .localAddress(new InetSocketAddress(HOST, SERVER_PORT))
+                    .localAddress(new InetSocketAddress(GATEWAY_HORT, GATEWAY_PORT))
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
