@@ -16,11 +16,11 @@ import java.util.UUID;
 public class RequestDecoderHandler extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        var requestId = new UUID(in.readLong(), in.readLong());
+        UUID requestId = new UUID(in.readLong(), in.readLong());
         in.readBytes(6 + 24);
-        var itemNameByte = new byte[20];
+        byte[] itemNameByte = new byte[20];
         in.readBytes(itemNameByte);
-        var itemName = new String(itemNameByte).strip();
+        String itemName = new String(itemNameByte).trim();
         out.add(new GetStockPriceRequest(requestId, itemName));
     }
 }

@@ -21,7 +21,7 @@ public class SimpleController {
     public StockPriceResponse getPrice(@RequestBody GetStockPriceRequest request) {
         try {
             Thread.sleep(2000L);
-            var number = rand.nextInt(10);
+            int number = rand.nextInt(10);
             if (number < 1) {
                 return StockPriceResponse.fail(request);
             }

@@ -1,6 +1,7 @@
 package com.demo.client;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -20,14 +21,14 @@ public class ClientMain {
 
     public static void main(String[] args) {
 
-        var clientHandler = new ClientHandler();
+        ClientHandler clientHandler = new ClientHandler();
 
 
 
         EventLoopGroup workerGroup = new NioEventLoopGroup();
 
         try {
-            var bootstrap = new Bootstrap(); // (1)
+            Bootstrap bootstrap = new Bootstrap(); // (1)
             bootstrap.group(workerGroup); // (2)
             bootstrap.channel(NioSocketChannel.class); // (3)
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true); // (4)
@@ -37,10 +38,10 @@ public class ClientMain {
                     ch.pipeline().addLast(clientHandler);
                 }
             });
-            var channels = new Channel[NUM_OF_CLIENT];
+            Channel[] channels = new Channel[NUM_OF_CLIENT];
             try {
                 for (int i = 0; i < NUM_OF_CLIENT; i++){
-                    var f = bootstrap.connect(GATEWAY_SERVER_HOST, GATEWAY_SERVER_PORT).sync();
+                    ChannelFuture f = bootstrap.connect(GATEWAY_SERVER_HOST, GATEWAY_SERVER_PORT).sync();
                     // Wait until the connection is closed.
                     channels[i] = f.channel();
                 }
@@ -59,8 +60,8 @@ public class ClientMain {
 
     public static void sendRequest(Channel ch) {
         for (int a = 0; a < 1; a++){
-            var request = ch.alloc().buffer(42); // (2)
-            var requestId = UUID.randomUUID();
+            ByteBuf request = ch.alloc().buffer(42); // (2)
+            UUID requestId = UUID.randomUUID();
             request.writeLong(requestId.getMostSignificantBits());
             request.writeLong(requestId.getLeastSignificantBits());
             request.writeBytes(ID_PADDING);
@@ -69,9 +70,9 @@ public class ClientMain {
                 request.writeByte(' ');
             }
             request.writeByte('|');
-            var stockName = "ABC";
-            var stockNameBytes = stockName.getBytes(StandardCharsets.UTF_8);
-            var padding = new byte[20 - stockNameBytes.length];
+            String stockName = "ABC";
+            byte[] stockNameBytes = stockName.getBytes(StandardCharsets.UTF_8);
+            byte[] padding = new byte[20 - stockNameBytes.length];
             Arrays.fill(padding, (byte) ' ');
             request.writeBytes(stockNameBytes);
             request.writeBytes(padding);

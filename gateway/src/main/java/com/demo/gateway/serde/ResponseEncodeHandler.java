@@ -17,6 +17,7 @@ import java.util.Objects;
 public class ResponseEncodeHandler extends MessageToByteEncoder<StockPriceResponse> {
 
     private static byte[] ID_PADDING = new byte[24];
+    private static byte[] PRICE_PADDING = new byte[2];
 
     @Override
     protected void encode(ChannelHandlerContext ctx, StockPriceResponse msg, ByteBuf out) throws Exception {
@@ -29,12 +30,13 @@ public class ResponseEncodeHandler extends MessageToByteEncoder<StockPriceRespon
             return;
         }
         out.writeByte('|');
-        var nameRealBytes = msg.getStockItemName().getBytes(StandardCharsets.UTF_8);
-        var padding = new byte[20 - nameRealBytes.length];
+        byte[] nameRealBytes = msg.getStockItemName().getBytes(StandardCharsets.UTF_8);
+        byte[] padding = new byte[20 - nameRealBytes.length];
         Arrays.fill(padding, (byte) ' ');
         out.writeBytes(nameRealBytes);
         out.writeBytes(padding);
         out.writeByte('|');
         out.writeDouble(msg.getStockPrice());
+        out.writeBytes(PRICE_PADDING);
     }
 }

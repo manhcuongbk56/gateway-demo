@@ -24,14 +24,16 @@ public class GetPriceService {
         try {
             body = MAPPER.writeValueAsBytes(getStockPriceRequest);
         } catch (JsonProcessingException e) {
-            return CompletableFuture.failedFuture(e);
+            CompletableFuture<StockPriceResponse> future = new CompletableFuture<>();
+            future.completeExceptionally(e);
+            return future;
         }
         Request request = new Request.Builder()
                 .url(PRICE_URL)
                 .post(RequestBody.create(JSON, body))
                 .build();
         Call call = client.newCall(request);
-        var result = new CompletableFuture<StockPriceResponse>();
+        CompletableFuture<StockPriceResponse> result = new CompletableFuture<>();
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

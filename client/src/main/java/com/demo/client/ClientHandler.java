@@ -19,21 +19,22 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     private AtomicInteger count = new AtomicInteger(0);
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-            throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         log.info("receive total {} response", count.incrementAndGet());
-        var response = (ByteBuf)msg;
-        var requestId = new UUID(response.readLong(), response.readLong());
+        ByteBuf response = (ByteBuf)msg;
+        UUID requestId = new UUID(response.readLong(), response.readLong());
         response.readBytes(25);
-        var responseCode = response.readBytes(4).toString(CharsetUtil.UTF_8);
+        String responseCode = response.readBytes(4).toString(CharsetUtil.UTF_8);
         if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())){
             log.info("Request fail: requestId {}, responseCode {}", requestId, responseCode);
             return;
         }
         response.readByte();
-        var name = response.readBytes(20).toString(CharsetUtil.UTF_8).strip();
+        String name = response.readBytes(20).toString(CharsetUtil.UTF_8).trim();
         response.readByte();
-        var price = response.readDouble();
+        double price = response.readDouble();
+        response.readBytes(2);
+        response.release();
         log.info("Request Success: requestId {}, responseCode {} stock name {} stockPrice {}", requestId,
                 responseCode, name, price);
     }
