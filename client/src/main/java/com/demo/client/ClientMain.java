@@ -61,6 +61,7 @@ public class ClientMain {
     public static void sendRequest(Channel ch) {
         for (int a = 0; a < 1; a++){
             ByteBuf request = ch.alloc().buffer(42); // (2)
+            request.setLong()
             UUID requestId = UUID.randomUUID();
             request.writeLong(requestId.getMostSignificantBits());
             request.writeLong(requestId.getLeastSignificantBits());
