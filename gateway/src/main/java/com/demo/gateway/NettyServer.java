@@ -1,7 +1,7 @@
 package com.demo.gateway;
 
+import com.demo.gateway.business.StockBusinessHandler;
 import com.demo.gateway.serde.RequestDecoderHandler;
-import com.demo.gateway.serde.ResponseEncodeHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -24,7 +24,8 @@ public class NettyServer {
     private static final String GATEWAY_HORT = "localhost";
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup(10);
-    private MessageHandler messageHandler = new MessageHandler();
+    private StockBusinessHandler stockBusinessHandler = new StockBusinessHandler();
+    private KeyIntegerMessageRouter messageHandler = new KeyIntegerMessageRouter(stockBusinessHandler);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
 
     public void start() {
@@ -43,8 +44,7 @@ public class NettyServer {
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
                             ch.pipeline().addLast(new FixedLengthFrameDecoder(66));
                             ch.pipeline().addLast("decoder", new RequestDecoderHandler());
-                            ch.pipeline().addLast("encoder", new  ResponseEncodeHandler());
-                            ch.pipeline().addLast("gateway", messageHandler);
+                            ch.pipeline().addLast("inboundRouter", messageHandler);
                         }
                     });
             Channel channel = serverBootstrap.bind().sync().channel();

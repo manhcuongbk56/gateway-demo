@@ -1,7 +1,7 @@
-package com.demo.gateway.service;
+package com.demo.gateway.business;
 
-import com.demo.common.message.GetStockPriceRequest;
-import com.demo.common.message.StockPriceResponse;
+import com.demo.common.message.stockprice.GetStockPriceRequest;
+import com.demo.common.message.stockprice.StockPriceResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.okhttp.*;
 
@@ -10,7 +10,8 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.demo.gateway.util.JsonUtils.MAPPER;
 
-public class GetPriceService {
+public class StockBusinessHandler {
+
 
     public static final String PRICE_URL = "http://localhost:8080/price";
 
@@ -57,5 +58,6 @@ public class GetPriceService {
         });
         return result;
     }
+
 
 }

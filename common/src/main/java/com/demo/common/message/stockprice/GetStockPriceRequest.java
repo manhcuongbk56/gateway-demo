@@ -1,4 +1,4 @@
-package com.demo.common.message;
+package com.demo.common.message.stockprice;
 
 
 import lombok.AllArgsConstructor;

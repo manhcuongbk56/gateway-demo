@@ -11,11 +11,10 @@ public interface Processor<I, O> {
 
     ByteBuf decode(O body);
 
-   BusinessHandler<I, O> getHandler();
+    BusinessHandler<I, O> getHandler();
 
 
-
-    default CompletableFuture<ByteBuf> process(ByteBuf body){
+    default CompletableFuture<ByteBuf> process(ByteBuf body) {
         I input = encode(body);
         return getHandler().handle(input)
                 .thenApply(this::decode);

@@ -1,13 +1,12 @@
 package com.demo.httpserver.controller;
 
-import com.demo.common.message.GetStockPriceRequest;
-import com.demo.common.message.StockPriceResponse;
+import com.demo.common.message.stockprice.GetStockPriceRequest;
+import com.demo.common.message.stockprice.StockPriceResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.math.BigDecimal;
 import java.util.Random;
 
 @Controller
