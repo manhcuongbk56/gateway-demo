@@ -7,17 +7,17 @@ import java.util.concurrent.CompletableFuture;
 
 public interface Processor<I, O> {
 
-    I encode(ByteBuf body);
+    I decode(ByteBuf body);
 
-    ByteBuf decode(O body);
+    ByteBuf encode(O body);
 
     BusinessHandler<I, O> getHandler();
 
 
     default CompletableFuture<ByteBuf> process(ByteBuf body) {
-        I input = encode(body);
+        I input = decode(body);
         return getHandler().handle(input)
-                .thenApply(this::decode);
+                .thenApply(this::encode);
     }
 
 }

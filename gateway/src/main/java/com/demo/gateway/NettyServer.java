@@ -1,7 +1,6 @@
 package com.demo.gateway;
 
 import com.demo.gateway.business.StockBusinessHandler;
-import com.demo.gateway.serde.RequestDecoderHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -11,7 +10,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.FixedLengthFrameDecoder;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.timeout.IdleStateHandler;
 import lombok.extern.log4j.Log4j2;
 
@@ -27,6 +27,7 @@ public class NettyServer {
     private StockBusinessHandler stockBusinessHandler = new StockBusinessHandler();
     private KeyIntegerMessageRouter messageHandler = new KeyIntegerMessageRouter(stockBusinessHandler);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
+    private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
 
     public void start() {
         try {
@@ -42,9 +43,9 @@ public class NettyServer {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
-                            ch.pipeline().addLast(new FixedLengthFrameDecoder(66));
-                            ch.pipeline().addLast("decoder", new RequestDecoderHandler());
-                            ch.pipeline().addLast("inboundRouter", messageHandler);
+                            ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            ch.pipeline().addLast(messageHandler);
+                            ch.pipeline().addLast(lengthFieldPrepender);
                         }
                     });
             Channel channel = serverBootstrap.bind().sync().channel();

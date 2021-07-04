@@ -1,8 +1,8 @@
-package com.demo.gateway.serde;
+package com.demo.gateway.encodedecode;
 
 import io.netty.buffer.ByteBuf;
 
-public interface GatewayDecoder<T> {
+public interface Decoder<T> {
 
     T decode(ByteBuf byteBuf);
 

@@ -1,4 +1,4 @@
-package com.demo.gateway.messagetype;
+package com.demo.common.message.messagetype;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

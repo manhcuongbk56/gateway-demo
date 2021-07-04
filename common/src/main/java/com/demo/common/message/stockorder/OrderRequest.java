@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Map;
+import java.util.UUID;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
 
+    private UUID requestId;
     private String stock;
-    private String orderType;
-    private Map<String, Object> orderInfo;
-
+    private boolean sell;
+    private long quantity;
+    private double price;
 }

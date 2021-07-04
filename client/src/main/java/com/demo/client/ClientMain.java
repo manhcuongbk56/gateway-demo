@@ -1,11 +1,14 @@
 package com.demo.client;
 
+import com.demo.common.message.messagetype.IntegerMessageType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
 import lombok.extern.log4j.Log4j2;
 
 import java.nio.charset.StandardCharsets;
@@ -16,8 +19,10 @@ import java.util.UUID;
 public class ClientMain {
     private static final String GATEWAY_SERVER_HOST = "localhost";
     private static final int GATEWAY_SERVER_PORT = 6969;
-    private static final int NUM_OF_CLIENT = 200;
+    private static final int NUM_OF_CLIENT = 1;
     private static final byte[] ID_PADDING = new byte[24];
+
+    private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
 
     public static void main(String[] args) {
 
@@ -34,8 +39,10 @@ public class ClientMain {
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true); // (4)
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
-                public void initChannel(SocketChannel ch) throws Exception {
+                public void initChannel(SocketChannel ch) {
                     ch.pipeline().addLast(clientHandler);
+                    ch.pipeline().addLast(lengthFieldPrepender);
+                    ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                 }
             });
             Channel[] channels = new Channel[NUM_OF_CLIENT];
@@ -60,8 +67,8 @@ public class ClientMain {
 
     public static void sendRequest(Channel ch) {
         for (int a = 0; a < 1; a++){
-            ByteBuf request = ch.alloc().buffer(42); // (2)
-            request.setLong()
+            ByteBuf request = ch.alloc().buffer(46); // (2)
+            request.writeInt(IntegerMessageType.Request.GET_PRICE);
             UUID requestId = UUID.randomUUID();
             request.writeLong(requestId.getMostSignificantBits());
             request.writeLong(requestId.getLeastSignificantBits());

@@ -1,7 +1,8 @@
-package com.demo.gateway.serde;
+package com.demo.gateway.encodedecode.encoder;
 
 import com.demo.common.constant.ResponseCode;
 import com.demo.common.message.stockprice.StockPriceResponse;
+import com.demo.gateway.encodedecode.Encoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandler;
@@ -13,7 +14,7 @@ import java.util.Objects;
 
 @Log4j2
 @ChannelHandler.Sharable
-public class ResponseEncodeHandler implements GatewayEncoder<StockPriceResponse> {
+public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
 
     private static byte[] ID_PADDING = new byte[24];
     private static byte[] PRICE_PADDING = new byte[2];

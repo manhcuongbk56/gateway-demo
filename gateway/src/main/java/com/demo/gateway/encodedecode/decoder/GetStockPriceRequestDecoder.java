@@ -1,6 +1,7 @@
-package com.demo.gateway.serde;
+package com.demo.gateway.encodedecode.decoder;
 
 import com.demo.common.message.stockprice.GetStockPriceRequest;
+import com.demo.gateway.encodedecode.Decoder;
 import io.netty.buffer.ByteBuf;
 import lombok.extern.log4j.Log4j2;
 
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 
 @Log4j2
-public class RequestDecoderHandler implements GatewayDecoder<GetStockPriceRequest> {
+public class GetStockPriceRequestDecoder implements Decoder<GetStockPriceRequest> {
 
     @Override
     public GetStockPriceRequest decode(ByteBuf byteBuf) {
