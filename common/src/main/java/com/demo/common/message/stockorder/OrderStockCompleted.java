@@ -1,17 +1,15 @@
-package com.demo.common.message.cancelorder;
+package com.demo.common.message.stockorder;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CancelOrderRequest {
-
-    private UUID requestId;
+public class OrderStockCompleted {
+    private String responseCode;
     private long orderNo;
 
 }

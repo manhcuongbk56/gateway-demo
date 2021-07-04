@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CancelOrderResponse {
+public class CancelStockOrderResponse {
 
-    private boolean success;
+    private String  responseCode;
 
 }

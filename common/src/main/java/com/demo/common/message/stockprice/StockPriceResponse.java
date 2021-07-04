@@ -23,6 +23,13 @@ public class StockPriceResponse {
                 .build();
     }
 
+    public static StockPriceResponse fail(UUID requestId){
+        return  StockPriceResponse.builder()
+                .requestId(requestId)
+                .responseCode(ResponseCode.FAIL.getCode())
+                .build();
+    }
+
     public static StockPriceResponse success(GetStockPriceRequest request, double stockPrice){
         return  StockPriceResponse.builder()
                 .requestId(request.getRequestId())
@@ -31,5 +38,15 @@ public class StockPriceResponse {
                 .responseCode(ResponseCode.SUCCESS.getCode())
                 .build();
     }
+
+    public static StockPriceResponse success(UUID requestId, String stockItemName, double stockPrice){
+        return  StockPriceResponse.builder()
+                .requestId(requestId)
+                .stockPrice(stockPrice)
+                .stockItemName(stockItemName)
+                .responseCode(ResponseCode.SUCCESS.getCode())
+                .build();
+    }
+
 
 }

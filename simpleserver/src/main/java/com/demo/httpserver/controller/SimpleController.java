@@ -18,16 +18,16 @@ public class SimpleController {
     @PostMapping("/price")
     @ResponseBody
     public StockPriceResponse getPrice(@RequestBody GetStockPriceRequest request) {
-        try {
-            Thread.sleep(2000L);
+//        try {
+//            Thread.sleep(2000L);
             int number = rand.nextInt(10);
             if (number < 1) {
                 return StockPriceResponse.fail(request);
             }
             return StockPriceResponse.success(request, 20.5d);
-        } catch (InterruptedException e) {
-            return StockPriceResponse.fail(request);
-        }
+//        } catch (InterruptedException e) {
+//            return StockPriceResponse.fail(request);
+//        }
 
     }
 

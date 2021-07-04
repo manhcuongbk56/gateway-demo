@@ -42,10 +42,10 @@ public class NettyServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
+                            ch.pipeline().addLast(lengthFieldPrepender);
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
                             ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                             ch.pipeline().addLast(messageHandler);
-                            ch.pipeline().addLast(lengthFieldPrepender);
                         }
                     });
             Channel channel = serverBootstrap.bind().sync().channel();

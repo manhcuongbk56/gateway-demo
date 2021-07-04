@@ -9,8 +9,10 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderResponse {
+public class OrderStockResponse {
+
     private UUID requestId;
+    private String responseCode;
     private long orderNo;
 
 }

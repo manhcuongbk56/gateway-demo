@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 @ChannelHandler.Sharable
-public class ClientHandler extends ChannelInboundHandlerAdapter {
+public class ClientRead extends ChannelInboundHandlerAdapter {
 
     private AtomicInteger count = new AtomicInteger(0);
 

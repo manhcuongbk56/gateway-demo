@@ -1,6 +1,7 @@
 package com.demo.gateway.encodedecode.decoder;
 
 import com.demo.common.message.stockprice.GetStockPriceRequest;
+import com.demo.common.utils.ByteBufUtils;
 import com.demo.gateway.encodedecode.Decoder;
 import io.netty.buffer.ByteBuf;
 import lombok.extern.log4j.Log4j2;
@@ -13,11 +14,9 @@ public class GetStockPriceRequestDecoder implements Decoder<GetStockPriceRequest
 
     @Override
     public GetStockPriceRequest decode(ByteBuf byteBuf) {
-        UUID requestId = new UUID(byteBuf.readLong(), byteBuf.readLong());
-        byteBuf.readBytes(6 + 24);
-        byte[] itemNameByte = new byte[20];
-        byteBuf.readBytes(itemNameByte);
-        String itemName = new String(itemNameByte).trim();
+        UUID requestId = ByteBufUtils.readUUID(byteBuf);
+        byteBuf.readBytes(1 + 4 + 1);
+        String itemName = ByteBufUtils.read20BytesString(byteBuf);
         return new GetStockPriceRequest(requestId, itemName);
     }
 

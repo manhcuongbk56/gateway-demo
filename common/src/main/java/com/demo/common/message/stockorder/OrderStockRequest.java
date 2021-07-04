@@ -10,11 +10,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRequest {
+public class OrderStockRequest {
 
     private UUID requestId;
     private String stock;
-    private boolean sell;
+    private String sellOrBuy;
     private long quantity;
     private double price;
 }

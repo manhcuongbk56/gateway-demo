@@ -14,9 +14,10 @@ public class IntegerMessageType {
 
     public static class Response {
         public static final int GET_PRICE_RESPONSE = 1;
-        public static final int ORDER_NO = 2;
-        public static final int ORDER_COMPLETED = 3;
-        public static final int CANCEL_COMPLETED = 4;
+        public static final int STOCK_ORDER_NO = 2;
+        public static final int STOCK_ORDER_COMPLETED = 3;
+        public static final int CANCEL_STOCK_ORDER_COMPLETED = 4;
+        public static final int STOCK_ORDER_HISTORY = 5;
     }
 
 
