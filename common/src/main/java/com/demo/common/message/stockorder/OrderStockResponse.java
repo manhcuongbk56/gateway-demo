@@ -25,5 +25,8 @@ public class OrderStockResponse {
         return new OrderStockResponse(requestId, ResponseCode.FAIL.getCode());
     }
 
+    public static OrderStockResponse success(UUID requestId, long orderNo){
+        return new OrderStockResponse(requestId, ResponseCode.SUCCESS.getCode(), orderNo);
+    }
 
 }

@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -11,6 +12,7 @@ import java.util.List;
 @Builder
 public class StockOrderHistoryResponse {
 
+    private UUID requestId;
     @Singular
     private List<DayHistory> days;
 

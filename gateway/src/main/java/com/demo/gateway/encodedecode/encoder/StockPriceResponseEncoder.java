@@ -13,6 +13,8 @@ import lombok.extern.log4j.Log4j2;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import static com.demo.common.utils.ByteBufUtils.writeUUID;
+
 @Log4j2
 @ChannelHandler.Sharable
 public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
@@ -21,9 +23,9 @@ public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
 
     @Override
     public ByteBuf encode(StockPriceResponse stockPriceResponse) {
-        ByteBuf out = ByteBufAllocator.DEFAULT.buffer();
+        ByteBuf out = ByteBufAllocator.DEFAULT.buffer(77);
         out.writeInt(MessageType.Response.GET_PRICE_RESPONSE);
-        ByteBufUtils.writeUUID(out, stockPriceResponse.getRequestId());
+        writeUUID(out, stockPriceResponse.getRequestId());
         out.writeByte('|');
         out.writeBytes(stockPriceResponse.getResponseCode().getBytes(StandardCharsets.UTF_8));
         if (Objects.equals(stockPriceResponse.getResponseCode(), ResponseCode.FAIL.getCode())){

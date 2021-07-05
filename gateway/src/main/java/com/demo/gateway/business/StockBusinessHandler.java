@@ -68,29 +68,29 @@ public class StockBusinessHandler {
         return result;
     }
 
-    public CompletableFuture<OrderStockResponse> orderStock(OrderStockRequest request){
-        if (isShouldSuccess()){
+    public CompletableFuture<OrderStockResponse> orderStock(OrderStockRequest request) {
+        if (isShouldSuccess()) {
             return CompletableFuture.completedFuture(new OrderStockResponse(request.getRequestId(), ResponseCode.SUCCESS.getCode(), 1234));
         }
         return CompletableFuture.completedFuture(OrderStockResponse.fail(request.getRequestId()));
     }
 
-    public CompletableFuture<CancelStockOrderResponse> cancelStockOrder(CancelStockOrderRequest request){
-        if (isShouldSuccess()){
+    public CompletableFuture<CancelStockOrderResponse> cancelStockOrder(CancelStockOrderRequest request) {
+        if (isShouldSuccess()) {
             return CompletableFuture.completedFuture(new CancelStockOrderResponse(request.getRequestId(), ResponseCode.SUCCESS.getCode()));
         }
         return CompletableFuture.completedFuture(new CancelStockOrderResponse(request.getRequestId(), ResponseCode.FAIL.getCode()));
     }
 
-    public CompletableFuture<StockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request){
-        if (isShouldSuccess()){
+    public CompletableFuture<StockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request) {
+        if (isShouldSuccess()) {
             return CompletableFuture.completedFuture(generateSimple());
         }
         return CompletableFuture.completedFuture(StockOrderHistoryResponse.builder()
                 .build());
     }
 
-    private StockOrderHistoryResponse generateSimple(){
+    private StockOrderHistoryResponse generateSimple() {
         StockOrderHistoryResponse.StockOrderInfo info1 = StockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("ABC")
                 .sellOrBuy("sell")
@@ -129,15 +129,14 @@ public class StockBusinessHandler {
                 .order(info3)
                 .order(info4)
                 .build();
-        return   StockOrderHistoryResponse.builder()
+        return StockOrderHistoryResponse.builder()
                 .day(day1)
                 .day(day2)
                 .build();
     }
 
 
-
-    private boolean isShouldSuccess(){
+    private boolean isShouldSuccess() {
         int number = rand.nextInt(10);
         return number >= 2;
     }
