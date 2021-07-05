@@ -1,6 +1,6 @@
 package com.demo.gateway;
 
-import com.demo.common.message.messagetype.IntegerMessageType;
+import com.demo.common.message.messagetype.MessageType;
 import com.demo.gateway.business.StockBusinessHandler;
 import com.demo.gateway.processor.PriceProcessor;
 import com.demo.gateway.processor.Processor;
@@ -22,7 +22,7 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
 
     public KeyIntegerMessageRouter(StockBusinessHandler stockBusinessHandler) {
         this.prcessors = new HashMap<>();
-        prcessors.put(IntegerMessageType.Request.GET_PRICE, getPriceService);
+        prcessors.put(MessageType.Request.GET_PRICE, getPriceService);
 
     }
 

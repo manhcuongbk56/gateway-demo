@@ -2,7 +2,7 @@ package com.demo.client;
 
 import com.demo.common.constant.ResponseCode;
 import com.demo.common.message.cancelorder.CancelStockOrderResponse;
-import com.demo.common.message.messagetype.IntegerMessageType;
+import com.demo.common.message.messagetype.MessageType;
 import com.demo.common.message.stockorder.OrderStockResponse;
 import com.demo.common.message.stockprice.StockPriceResponse;
 import com.demo.common.utils.ByteBufUtils;
@@ -16,6 +16,7 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.CharsetUtil;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -35,15 +36,15 @@ public class Client {
     public Client(Channel channel) {
         this.channel = channel;
         channel.pipeline().addLast(lengthFieldPrepender);
-        channel.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+        channel.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
         channel.pipeline().addLast(new Reader());
         futureResponseMap = new ConcurrentHashMap<>();
         decoders = new HashMap<>();
-        decoders.put(IntegerMessageType.Response.GET_PRICE_RESPONSE, this::handleStockPriceResponse);
-        decoders.put(IntegerMessageType.Response.STOCK_ORDER_NO, this::handleStockPriceResponse);
-        decoders.put(IntegerMessageType.Response.STOCK_ORDER_COMPLETED, this::handleStockPriceResponse);
-        decoders.put(IntegerMessageType.Response.CANCEL_STOCK_ORDER_COMPLETED, this::handleStockPriceResponse);
-        decoders.put(IntegerMessageType.Response.STOCK_ORDER_HISTORY, this::handleStockPriceResponse);
+        decoders.put(MessageType.Response.GET_PRICE_RESPONSE, this::handleStockPriceResponse);
+        decoders.put(MessageType.Response.STOCK_ORDER_NO, this::handleStockPriceResponse);
+        decoders.put(MessageType.Response.STOCK_ORDER_COMPLETED, this::handleStockPriceResponse);
+        decoders.put(MessageType.Response.CANCEL_STOCK_ORDER_COMPLETED, this::handleStockPriceResponse);
+        decoders.put(MessageType.Response.STOCK_ORDER_HISTORY, this::handleStockPriceResponse);
     }
 
     private void send(ByteBuf byteBuf) {
@@ -56,15 +57,15 @@ public class Client {
         decoders.get(responseType).handle(responseByteBuf);
     }
 
-    private void handleStockPriceResponse(ByteBuf responseByteBuf){
+    private void handleStockPriceResponse(ByteBuf responseByteBuf) {
         UUID requestId = ByteBufUtils.readUUID(responseByteBuf);
         responseByteBuf.readByte();
         String responseCode = responseByteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
         StockPriceResponse response;
-        if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())){
+        if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())) {
             log.info("Request fail: requestId {}, responseCode {}", requestId, responseCode);
             response = StockPriceResponse.fail(requestId);
-        }else {
+        } else {
             responseByteBuf.readByte();
             String name = responseByteBuf.readBytes(20).toString(CharsetUtil.UTF_8).trim();
             responseByteBuf.readByte();
@@ -78,7 +79,7 @@ public class Client {
 
     public CompletableFuture<StockPriceResponse> getStockPrice(String stockName) {
         ByteBuf request = ByteBufAllocator.DEFAULT.buffer(46);
-        request.writeInt(IntegerMessageType.Request.GET_PRICE);
+        request.writeInt(MessageType.Request.GET_PRICE);
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         for (int i = 0; i < 4; i++) {
@@ -92,9 +93,9 @@ public class Client {
         return responseFuture;
     }
 
-    private CompletableFuture<OrderStockResponse> orderStock(String stockName, String sellOrBuy, long quantity, double price) {
-        ByteBuf request = ByteBufAllocator.DEFAULT.buffer(46);
-        request.writeInt(IntegerMessageType.Request.STOCK_ORDER);
+    public CompletableFuture<OrderStockResponse> orderStock(String stockName, String sellOrBuy, long quantity, double price) {
+        ByteBuf request = ByteBufAllocator.DEFAULT.buffer(100);
+        request.writeInt(MessageType.Request.STOCK_ORDER);
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         ByteBufUtils.write20BytesString(request, stockName);
@@ -110,12 +111,28 @@ public class Client {
         return responseFuture;
     }
 
-    private CompletableFuture<CancelStockOrderResponse> cancelStockOrderRequest(long orderNo) {
-        ByteBuf request = ByteBufAllocator.DEFAULT.buffer(46);
-        request.writeInt(IntegerMessageType.Request.STOCK_ORDER);
+    public CompletableFuture<CancelStockOrderResponse> cancelStockOrderRequest(long orderNo) {
+        ByteBuf request = ByteBufAllocator.DEFAULT.buffer(45);
+        request.writeInt(MessageType.Request.STOCK_ORDER);
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         request.writeLong(orderNo);
+        send(request);
+        CompletableFuture<CancelStockOrderResponse> responseFuture = new CompletableFuture<>();
+        futureResponseMap.put(requestId, responseFuture);
+        return responseFuture;
+    }
+
+    public CompletableFuture<CancelStockOrderResponse> getOrderHistory(long clientAccountNo, LocalDate fromDate, LocalDate toDate) {
+        ByteBuf request = ByteBufAllocator.DEFAULT.buffer(67);
+        request.writeInt(MessageType.Request.STOCK_ORDER);
+        UUID requestId = ByteBufUtils.writeUUID(request);
+        request.writeByte('|');
+        request.writeLong(clientAccountNo);
+        request.writeByte('|');
+        ByteBufUtils.writeDate(request, fromDate);
+        request.writeByte('|');
+        ByteBufUtils.writeDate(request, toDate);
         send(request);
         CompletableFuture<CancelStockOrderResponse> responseFuture = new CompletableFuture<>();
         futureResponseMap.put(requestId, responseFuture);

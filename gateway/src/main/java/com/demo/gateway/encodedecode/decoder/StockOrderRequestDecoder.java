@@ -14,6 +14,7 @@ public class StockOrderRequestDecoder implements Decoder<OrderStockRequest> {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
         byteBuf.readByte();
         String stockName = ByteBufUtils.read20BytesString(byteBuf);
+        byteBuf.readByte();
         String sellOrBuy = ByteBufUtils.read20BytesString(byteBuf);
         byteBuf.readByte();
         long quantity = byteBuf.readLong();

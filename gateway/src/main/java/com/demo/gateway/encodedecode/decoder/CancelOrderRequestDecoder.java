@@ -12,6 +12,7 @@ public class CancelOrderRequestDecoder implements Decoder<CancelStockOrderReques
     @Override
     public CancelStockOrderRequest decode(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
+        byteBuf.readByte();
         long orderNo = byteBuf.readLong();
         return new CancelStockOrderRequest(requestId, orderNo);
     }

@@ -1,18 +1,19 @@
 package com.demo.client;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ClientManager {
 
-    private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
     private Bootstrap bootstrap;
     private String serverHost;
     private int serverPort;
@@ -29,8 +30,6 @@ public class ClientManager {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) {
-//                    ch.pipeline().addLast(lengthFieldPrepender);
-//                    ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                 }
             });
         } catch (Exception ex){

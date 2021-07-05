@@ -4,16 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetHistoryRequest {
+public class GetStockOrderHistoryRequest {
     private UUID requestId;
     private long clientAccountNo;
-    private OffsetDateTime from;
-    private OffsetDateTime to;
+    private LocalDate from;
+    private LocalDate to;
 
 }
