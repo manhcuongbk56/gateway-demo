@@ -14,7 +14,10 @@ import com.squareup.okhttp.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static com.demo.gateway.util.JsonUtils.MAPPER;
@@ -84,13 +87,15 @@ public class StockBusinessHandler {
 
     public CompletableFuture<GetStockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request) {
         if (isShouldSuccess()) {
-            return CompletableFuture.completedFuture(generateSimple());
+            return CompletableFuture.completedFuture(generateSimple(request.getRequestId()));
         }
         return CompletableFuture.completedFuture(GetStockOrderHistoryResponse.builder()
+                        .requestId(request.getRequestId())
+                        .days(new ArrayList<>())
                 .build());
     }
 
-    private GetStockOrderHistoryResponse generateSimple() {
+    private GetStockOrderHistoryResponse generateSimple(UUID requestId) {
         GetStockOrderHistoryResponse.StockOrderInfo info1 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("ABC")
                 .sellOrBuy("sell")
@@ -130,6 +135,7 @@ public class StockBusinessHandler {
                 .order(info4)
                 .build();
         return GetStockOrderHistoryResponse.builder()
+                .requestId(requestId)
                 .day(day1)
                 .day(day2)
                 .build();

@@ -44,7 +44,7 @@ public class Client {
         decoders.put(MessageType.Response.GET_PRICE_RESPONSE, this::handleGetStockPriceResponse);
         decoders.put(MessageType.Response.ORDER_STOCK_RESPONSE, this::handleOrderStockResponse);
         decoders.put(MessageType.Response.CANCEL_STOCK_ORDER_RESPONSE, this::handleCancelStockOrderResponse);
-        decoders.put(MessageType.Response.GET_STOCK_ORDER_HISTORY_RESPONSE, this::handleGetStockPriceResponse);
+        decoders.put(MessageType.Response.GET_STOCK_ORDER_HISTORY_RESPONSE, this::handleGetStockOrderHistoryResponse);
         decoders.put(MessageType.Response.ORDER_STOCK_COMPLETED, this::handleStockOrderCompletedResponse);
     }
 
@@ -183,7 +183,7 @@ public class Client {
 
     public CompletableFuture<CancelStockOrderResponse> cancelStockOrderRequest(long orderNo) {
         ByteBuf request = ByteBufAllocator.DEFAULT.buffer(45);
-        request.writeInt(MessageType.Request.STOCK_ORDER);
+        request.writeInt(MessageType.Request.CANCEL_ORDER);
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         request.writeLong(orderNo);
@@ -193,9 +193,9 @@ public class Client {
         return responseFuture;
     }
 
-    public CompletableFuture<CancelStockOrderResponse> getOrderHistory(long clientAccountNo, LocalDate fromDate, LocalDate toDate) {
+    public CompletableFuture<GetStockOrderHistoryResponse> getOrderHistory(long clientAccountNo, LocalDate fromDate, LocalDate toDate) {
         ByteBuf request = ByteBufAllocator.DEFAULT.buffer(67);
-        request.writeInt(MessageType.Request.STOCK_ORDER);
+        request.writeInt(MessageType.Request.GET_HISTORY);
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         request.writeLong(clientAccountNo);
@@ -204,7 +204,7 @@ public class Client {
         request.writeByte('|');
         ByteBufUtils.writeDate(request, toDate);
         send(request);
-        CompletableFuture<CancelStockOrderResponse> responseFuture = new CompletableFuture<>();
+        CompletableFuture<GetStockOrderHistoryResponse> responseFuture = new CompletableFuture<>();
         futureResponseMap.put(requestId, responseFuture);
         return responseFuture;
     }

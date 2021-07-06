@@ -4,17 +4,26 @@ import com.demo.common.message.stockprice.GetStockPriceRequest;
 import com.demo.common.message.stockprice.StockPriceResponse;
 import com.demo.gateway.business.BusinessHandler;
 import com.demo.gateway.business.StockBusinessHandler;
+import com.demo.gateway.encodedecode.Decoder;
+import com.demo.gateway.encodedecode.Encoder;
 import com.demo.gateway.encodedecode.decoder.GetStockPriceRequestDecoder;
 import com.demo.gateway.encodedecode.encoder.StockPriceResponseEncoder;
+import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class StockPriceProcessor implements Processor<GetStockPriceRequest, StockPriceResponse> {
 
-    private GetStockPriceRequestDecoder decoder;
+    private Decoder<GetStockPriceRequest> decoder;
     private StockBusinessHandler handler;
-    private StockPriceResponseEncoder encoder;
+    private Encoder<StockPriceResponse> encoder;
+
+    @Inject
+    public StockPriceProcessor(Decoder<GetStockPriceRequest> decoder, StockBusinessHandler handler, Encoder<StockPriceResponse> encoder) {
+        this.decoder = decoder;
+        this.handler = handler;
+        this.encoder = encoder;
+    }
 
     @Override
     public GetStockPriceRequest decode(ByteBuf body) {

@@ -4,6 +4,7 @@ import com.demo.common.message.messagetype.MessageType;
 import com.demo.gateway.business.StockBusinessHandler;
 import com.demo.gateway.encodedecode.decoder.GetStockPriceRequestDecoder;
 import com.demo.gateway.processor.*;
+import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,6 +21,7 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
 
     private Map<Integer, Processor> prcessors;
 
+    @Inject
     public KeyIntegerMessageRouter(CancelStockOrderProcessor cancelStockOrderProcessor,
                                    GetStockOrderHistoryProcessor getStockOrderHistoryProcessor,
                                    OrderStockProcessor orderStockProcessor,
@@ -44,7 +46,7 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
         handleRaw(messageType, data)
                 .thenApply(response -> ctx.writeAndFlush(response))
                 .exceptionally(ex -> {
-                    log.error("Error happen when handle input");
+                    log.error("Error happen when handle input", ex);
                     ctx.writeAndFlush("Error happen");
                     return null;
                 });

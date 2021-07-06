@@ -4,18 +4,24 @@ import com.demo.common.message.cancelorder.CancelStockOrderRequest;
 import com.demo.common.message.cancelorder.CancelStockOrderResponse;
 import com.demo.gateway.business.BusinessHandler;
 import com.demo.gateway.business.StockBusinessHandler;
-import com.demo.gateway.encodedecode.decoder.CancelStockOrderRequestDecoder;
-import com.demo.gateway.encodedecode.encoder.CancelStockOrderResponseEncoder;
+import com.demo.gateway.encodedecode.Decoder;
+import com.demo.gateway.encodedecode.Encoder;
+import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class CancelStockOrderProcessor implements Processor<CancelStockOrderRequest, CancelStockOrderResponse> {
 
-    private CancelStockOrderRequestDecoder decoder;
-    private StockBusinessHandler handler;
-    private CancelStockOrderResponseEncoder encoder;
+    private final Decoder<CancelStockOrderRequest> decoder;
+    private final StockBusinessHandler handler;
+    private final Encoder<CancelStockOrderResponse> encoder;
 
+    @Inject
+    public CancelStockOrderProcessor(Decoder<CancelStockOrderRequest> decoder, StockBusinessHandler handler, Encoder<CancelStockOrderResponse> encoder) {
+        this.decoder = decoder;
+        this.handler = handler;
+        this.encoder = encoder;
+    }
 
     @Override
     public CancelStockOrderRequest decode(ByteBuf body) {
@@ -31,4 +37,5 @@ public class CancelStockOrderProcessor implements Processor<CancelStockOrderRequ
     public BusinessHandler<CancelStockOrderRequest, CancelStockOrderResponse> getHandler() {
         return handler::cancelStockOrder;
     }
+
 }
