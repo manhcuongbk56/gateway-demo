@@ -13,8 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ByteBufUtils {
 
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyyMMdd");
     private static final byte[] ID_PADDING = new byte[24];
+    private static final byte[] PRICE_PADDING = new byte[2];
 
     public static UUID readUUID(ByteBuf byteBuf) {
         UUID requestId = new UUID(byteBuf.readLong(), byteBuf.readLong());
@@ -32,6 +33,11 @@ public class ByteBufUtils {
     public static void writeDate(ByteBuf byteBuf, LocalDate localDate){
         byte[] dateBytes =  DATE_FORMAT.format(localDate).getBytes(StandardCharsets.UTF_8);
         byteBuf.writeBytes(dateBytes);
+    }
+
+    public static void write10BytesDouble(ByteBuf byteBuf, double doubleNumber){
+        byteBuf.writeDouble(doubleNumber);
+        byteBuf.writeBytes(PRICE_PADDING);
     }
 
     public static LocalDate readDate(ByteBuf byteBuf){

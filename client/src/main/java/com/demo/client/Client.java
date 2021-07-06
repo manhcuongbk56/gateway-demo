@@ -18,19 +18,19 @@ import io.netty.util.CharsetUtil;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Client {
 
     private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
     private final Channel channel;
+
+
     private Map<UUID, CompletableFuture> futureResponseMap;
     private Map<Integer, ResponseHandler> decoders;
 
@@ -45,6 +45,7 @@ public class Client {
         decoders.put(MessageType.Response.ORDER_STOCK_RESPONSE, this::handleOrderStockResponse);
         decoders.put(MessageType.Response.CANCEL_STOCK_ORDER_RESPONSE, this::handleCancelStockOrderResponse);
         decoders.put(MessageType.Response.GET_STOCK_ORDER_HISTORY_RESPONSE, this::handleGetStockPriceResponse);
+        decoders.put(MessageType.Response.ORDER_STOCK_COMPLETED, this::handleStockOrderCompletedResponse);
     }
 
     private void send(ByteBuf byteBuf) {
@@ -84,14 +85,41 @@ public class Client {
         futureResponseMap.get(requestId).complete(response);
     }
 
-    private void handleGetStockOrderHistoryResponse(ByteBuf responseByteBuf) {
-        UUID requestId = ByteBufUtils.readUUID(responseByteBuf);
-        responseByteBuf.readByte();
-        String responseCode = responseByteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
-        StockOrderHistoryResponse response;
+    @SuppressWarnings("unchecked")
+    private void handleGetStockOrderHistoryResponse(ByteBuf byteBuf) {
+        UUID requestId = ByteBufUtils.readUUID(byteBuf);
+        byteBuf.readByte();
+        int totalDay = byteBuf.readInt();
+         List<StockOrderHistoryResponse.DayHistory> days = new ArrayList<>(totalDay);
+        for (int i = 0; i< totalDay; i++){
+            days.add(parseDayHistory(byteBuf));
+        }
+        StockOrderHistoryResponse response = new StockOrderHistoryResponse(requestId, days);
         futureResponseMap.get(requestId).complete(response);
     }
 
+    private StockOrderHistoryResponse.DayHistory parseDayHistory(ByteBuf byteBuf){
+        int size = byteBuf.readInt();
+        LocalDate day = ByteBufUtils.readDate(byteBuf);
+        List<StockOrderHistoryResponse.StockOrderInfo> orders = new ArrayList<>(size);
+        for (int i = 0; i < size; i++){
+            orders.add(parseStockOrderInfo(byteBuf));
+        }
+        return new StockOrderHistoryResponse.DayHistory(day, orders);
+    }
+
+    private StockOrderHistoryResponse.StockOrderInfo parseStockOrderInfo(ByteBuf byteBuf){
+        String stockName = ByteBufUtils.read20BytesString(byteBuf);
+        byteBuf.readByte();
+        String sellOrBuy = ByteBufUtils.read20BytesString(byteBuf);
+        byteBuf.readByte();
+        long quantity = byteBuf.readLong();
+        byteBuf.readByte();
+        double price = byteBuf.readDouble();
+        byteBuf.readByte();
+        boolean isSuccess = byteBuf.readBoolean();
+        return new StockOrderHistoryResponse.StockOrderInfo(stockName, sellOrBuy, quantity, price, isSuccess);
+    }
 
 
     private void handleStockOrderCompletedResponse(ByteBuf byteBuf) {

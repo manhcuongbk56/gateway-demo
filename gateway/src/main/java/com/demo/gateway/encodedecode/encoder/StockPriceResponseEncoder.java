@@ -19,8 +19,6 @@ import static com.demo.common.utils.ByteBufUtils.writeUUID;
 @ChannelHandler.Sharable
 public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
 
-    private static final byte[] PRICE_PADDING = new byte[2];
-
     @Override
     public ByteBuf encode(StockPriceResponse stockPriceResponse) {
         ByteBuf out = ByteBufAllocator.DEFAULT.buffer(77);
@@ -34,8 +32,7 @@ public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
         out.writeByte('|');
         ByteBufUtils.write20BytesString(out, stockPriceResponse.getStockItemName());
         out.writeByte('|');
-        out.writeDouble(stockPriceResponse.getStockPrice());
-        out.writeBytes(PRICE_PADDING);
+        ByteBufUtils.write10BytesDouble(out, stockPriceResponse.getStockPrice());
         return out;
     }
 
