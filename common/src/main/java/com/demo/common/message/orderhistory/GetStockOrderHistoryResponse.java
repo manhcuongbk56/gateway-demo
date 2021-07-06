@@ -10,7 +10,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class StockOrderHistoryResponse {
+public class GetStockOrderHistoryResponse {
 
     private UUID requestId;
     @Singular

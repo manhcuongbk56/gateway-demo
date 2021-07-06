@@ -3,7 +3,7 @@ package com.demo.client;
 import com.demo.common.constant.ResponseCode;
 import com.demo.common.message.cancelorder.CancelStockOrderResponse;
 import com.demo.common.message.messagetype.MessageType;
-import com.demo.common.message.orderhistory.StockOrderHistoryResponse;
+import com.demo.common.message.orderhistory.GetStockOrderHistoryResponse;
 import com.demo.common.message.stockorder.OrderStockResponse;
 import com.demo.common.message.stockprice.StockPriceResponse;
 import com.demo.common.utils.ByteBufUtils;
@@ -90,25 +90,25 @@ public class Client {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
         byteBuf.readByte();
         int totalDay = byteBuf.readInt();
-         List<StockOrderHistoryResponse.DayHistory> days = new ArrayList<>(totalDay);
+         List<GetStockOrderHistoryResponse.DayHistory> days = new ArrayList<>(totalDay);
         for (int i = 0; i< totalDay; i++){
             days.add(parseDayHistory(byteBuf));
         }
-        StockOrderHistoryResponse response = new StockOrderHistoryResponse(requestId, days);
+        GetStockOrderHistoryResponse response = new GetStockOrderHistoryResponse(requestId, days);
         futureResponseMap.get(requestId).complete(response);
     }
 
-    private StockOrderHistoryResponse.DayHistory parseDayHistory(ByteBuf byteBuf){
+    private GetStockOrderHistoryResponse.DayHistory parseDayHistory(ByteBuf byteBuf){
         int size = byteBuf.readInt();
         LocalDate day = ByteBufUtils.readDate(byteBuf);
-        List<StockOrderHistoryResponse.StockOrderInfo> orders = new ArrayList<>(size);
+        List<GetStockOrderHistoryResponse.StockOrderInfo> orders = new ArrayList<>(size);
         for (int i = 0; i < size; i++){
             orders.add(parseStockOrderInfo(byteBuf));
         }
-        return new StockOrderHistoryResponse.DayHistory(day, orders);
+        return new GetStockOrderHistoryResponse.DayHistory(day, orders);
     }
 
-    private StockOrderHistoryResponse.StockOrderInfo parseStockOrderInfo(ByteBuf byteBuf){
+    private GetStockOrderHistoryResponse.StockOrderInfo parseStockOrderInfo(ByteBuf byteBuf){
         String stockName = ByteBufUtils.read20BytesString(byteBuf);
         byteBuf.readByte();
         String sellOrBuy = ByteBufUtils.read20BytesString(byteBuf);
@@ -118,7 +118,7 @@ public class Client {
         double price = byteBuf.readDouble();
         byteBuf.readByte();
         boolean isSuccess = byteBuf.readBoolean();
-        return new StockOrderHistoryResponse.StockOrderInfo(stockName, sellOrBuy, quantity, price, isSuccess);
+        return new GetStockOrderHistoryResponse.StockOrderInfo(stockName, sellOrBuy, quantity, price, isSuccess);
     }
 
 

@@ -4,7 +4,7 @@ import com.demo.common.constant.ResponseCode;
 import com.demo.common.message.cancelorder.CancelStockOrderRequest;
 import com.demo.common.message.cancelorder.CancelStockOrderResponse;
 import com.demo.common.message.orderhistory.GetStockOrderHistoryRequest;
-import com.demo.common.message.orderhistory.StockOrderHistoryResponse;
+import com.demo.common.message.orderhistory.GetStockOrderHistoryResponse;
 import com.demo.common.message.stockorder.OrderStockRequest;
 import com.demo.common.message.stockorder.OrderStockResponse;
 import com.demo.common.message.stockprice.GetStockPriceRequest;
@@ -82,54 +82,54 @@ public class StockBusinessHandler {
         return CompletableFuture.completedFuture(new CancelStockOrderResponse(request.getRequestId(), ResponseCode.FAIL.getCode()));
     }
 
-    public CompletableFuture<StockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request) {
+    public CompletableFuture<GetStockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request) {
         if (isShouldSuccess()) {
             return CompletableFuture.completedFuture(generateSimple());
         }
-        return CompletableFuture.completedFuture(StockOrderHistoryResponse.builder()
+        return CompletableFuture.completedFuture(GetStockOrderHistoryResponse.builder()
                 .build());
     }
 
-    private StockOrderHistoryResponse generateSimple() {
-        StockOrderHistoryResponse.StockOrderInfo info1 = StockOrderHistoryResponse.StockOrderInfo.builder()
+    private GetStockOrderHistoryResponse generateSimple() {
+        GetStockOrderHistoryResponse.StockOrderInfo info1 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("ABC")
                 .sellOrBuy("sell")
                 .quantity(10L)
                 .price(50.3)
                 .isSuccess(true)
                 .build();
-        StockOrderHistoryResponse.StockOrderInfo info2 = StockOrderHistoryResponse.StockOrderInfo.builder()
+        GetStockOrderHistoryResponse.StockOrderInfo info2 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("DEF")
                 .sellOrBuy("buy")
                 .quantity(10L)
                 .price(50.3)
                 .isSuccess(false)
                 .build();
-        StockOrderHistoryResponse.StockOrderInfo info3 = StockOrderHistoryResponse.StockOrderInfo.builder()
+        GetStockOrderHistoryResponse.StockOrderInfo info3 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("HIJ")
                 .sellOrBuy("buy")
                 .quantity(10L)
                 .price(50.3)
                 .isSuccess(false)
                 .build();
-        StockOrderHistoryResponse.StockOrderInfo info4 = StockOrderHistoryResponse.StockOrderInfo.builder()
+        GetStockOrderHistoryResponse.StockOrderInfo info4 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("LOL")
                 .sellOrBuy("sell")
                 .quantity(10L)
                 .price(50.3)
                 .isSuccess(false)
                 .build();
-        StockOrderHistoryResponse.DayHistory day1 = StockOrderHistoryResponse.DayHistory.builder()
+        GetStockOrderHistoryResponse.DayHistory day1 = GetStockOrderHistoryResponse.DayHistory.builder()
                 .day(LocalDate.now())
                 .order(info1)
                 .order(info2)
                 .build();
-        StockOrderHistoryResponse.DayHistory day2 = StockOrderHistoryResponse.DayHistory.builder()
+        GetStockOrderHistoryResponse.DayHistory day2 = GetStockOrderHistoryResponse.DayHistory.builder()
                 .day(LocalDate.now().plusDays(1L))
                 .order(info3)
                 .order(info4)
                 .build();
-        return StockOrderHistoryResponse.builder()
+        return GetStockOrderHistoryResponse.builder()
                 .day(day1)
                 .day(day2)
                 .build();

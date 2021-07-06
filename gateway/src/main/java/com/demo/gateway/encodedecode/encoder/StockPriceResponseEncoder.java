@@ -16,7 +16,6 @@ import java.util.Objects;
 import static com.demo.common.utils.ByteBufUtils.writeUUID;
 
 @Log4j2
-@ChannelHandler.Sharable
 public class StockPriceResponseEncoder implements Encoder<StockPriceResponse> {
 
     @Override

@@ -10,17 +10,11 @@ import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class PriceProcessor implements Processor<GetStockPriceRequest, StockPriceResponse> {
+public class StockPriceProcessor implements Processor<GetStockPriceRequest, StockPriceResponse> {
 
-    private StockPriceResponseEncoder encoder;
     private GetStockPriceRequestDecoder decoder;
     private StockBusinessHandler handler;
-
-    public PriceProcessor() {
-        this.encoder = new StockPriceResponseEncoder();
-        this.decoder = new GetStockPriceRequestDecoder();
-        this.handler = new StockBusinessHandler();
-    }
+    private StockPriceResponseEncoder encoder;
 
     @Override
     public GetStockPriceRequest decode(ByteBuf body) {

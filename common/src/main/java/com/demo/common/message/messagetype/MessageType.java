@@ -11,6 +11,7 @@ public class MessageType {
         public static final int GET_PRICE = 1;
         public static final int STOCK_ORDER = 2;
         public static final int CANCEL_ORDER = 3;
+        public static final int GET_HISTORY = 4;
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

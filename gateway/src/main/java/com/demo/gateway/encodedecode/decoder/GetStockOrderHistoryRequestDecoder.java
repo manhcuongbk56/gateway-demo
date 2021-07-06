@@ -8,7 +8,7 @@ import io.netty.buffer.ByteBuf;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class OrderHistoryRequestDecoder implements Decoder<GetStockOrderHistoryRequest> {
+public class GetStockOrderHistoryRequestDecoder implements Decoder<GetStockOrderHistoryRequest> {
 
     @Override
     public GetStockOrderHistoryRequest decode(ByteBuf byteBuf) {

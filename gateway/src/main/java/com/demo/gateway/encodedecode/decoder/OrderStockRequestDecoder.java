@@ -7,7 +7,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
-public class StockOrderRequestDecoder implements Decoder<OrderStockRequest> {
+public class OrderStockRequestDecoder implements Decoder<OrderStockRequest> {
 
     @Override
     public OrderStockRequest decode(ByteBuf byteBuf) {

@@ -1,6 +1,8 @@
 package com.demo.gateway;
 
 import com.demo.gateway.business.StockBusinessHandler;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
@@ -25,11 +27,13 @@ public class NettyServer {
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup(10);
     private StockBusinessHandler stockBusinessHandler = new StockBusinessHandler();
-    private KeyIntegerMessageRouter messageHandler = new KeyIntegerMessageRouter(stockBusinessHandler);
     ServerBootstrap serverBootstrap = new ServerBootstrap();
     private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
 
     public void start() {
+        Injector injector = Guice.createInjector(new DependencyInjector());
+        KeyIntegerMessageRouter messageHandler = injector.getInstance(KeyIntegerMessageRouter.class);
+
         try {
             serverBootstrap
                     .group(boss, work)

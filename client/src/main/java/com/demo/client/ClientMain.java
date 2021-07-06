@@ -13,6 +13,8 @@ public class ClientMain {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         ClientManager clientManager = new ClientManager(GATEWAY_SERVER_HOST, GATEWAY_SERVER_PORT);
+        Client getPriceClient = clientManager.newClient();
+        Client orderStockClient = clientManager.newClient();
         Client client = clientManager.newClient();
         StockPriceResponse response =   client.getStockPrice("LOL").get();
     }

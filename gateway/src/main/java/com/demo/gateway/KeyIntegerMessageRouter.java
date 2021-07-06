@@ -2,8 +2,8 @@ package com.demo.gateway;
 
 import com.demo.common.message.messagetype.MessageType;
 import com.demo.gateway.business.StockBusinessHandler;
-import com.demo.gateway.processor.PriceProcessor;
-import com.demo.gateway.processor.Processor;
+import com.demo.gateway.encodedecode.decoder.GetStockPriceRequestDecoder;
+import com.demo.gateway.processor.*;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -20,13 +20,18 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
 
     private Map<Integer, Processor> prcessors;
 
-    public KeyIntegerMessageRouter(StockBusinessHandler stockBusinessHandler) {
+    public KeyIntegerMessageRouter(CancelStockOrderProcessor cancelStockOrderProcessor,
+                                   GetStockOrderHistoryProcessor getStockOrderHistoryProcessor,
+                                   OrderStockProcessor orderStockProcessor,
+                                   StockPriceProcessor stockPriceProcessor ) {
         this.prcessors = new HashMap<>();
-        prcessors.put(MessageType.Request.GET_PRICE, getPriceService);
+        prcessors.put(MessageType.Request.GET_PRICE, stockPriceProcessor);
+        prcessors.put(MessageType.Request.STOCK_ORDER, orderStockProcessor);
+        prcessors.put(MessageType.Request.CANCEL_ORDER, cancelStockOrderProcessor);
+        prcessors.put(MessageType.Request.GET_HISTORY, getStockOrderHistoryProcessor);
 
     }
 
-    private PriceProcessor getPriceService = new PriceProcessor();
 
     private AtomicInteger requestCount = new AtomicInteger(0);
     private AtomicInteger responseCount = new AtomicInteger(0);

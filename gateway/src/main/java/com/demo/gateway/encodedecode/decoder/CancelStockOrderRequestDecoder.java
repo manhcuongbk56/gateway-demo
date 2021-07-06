@@ -7,7 +7,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
-public class CancelOrderRequestDecoder implements Decoder<CancelStockOrderRequest> {
+
+public class CancelStockOrderRequestDecoder implements Decoder<CancelStockOrderRequest> {
 
     @Override
     public CancelStockOrderRequest decode(ByteBuf byteBuf) {

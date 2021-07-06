@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 @Log4j2
 @ChannelHandler.Sharable
-public class CancelOrderResponseDecoder implements Encoder<CancelStockOrderResponse> {
+public class CancelStockOrderResponseEncoder implements Encoder<CancelStockOrderResponse> {
 
     private static final byte[] PRICE_PADDING = new byte[2];
 
