@@ -25,6 +25,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Log4j2
 @SuppressWarnings({"unchecked", "rawtypes"})
+/**
+ * A simple client with async api
+ * every send request method will
+ *  + encode the request to byteBuf (every request will have an unique requestId)
+ *  + send to socket (channel)
+ *  + return a completable future and put this future to the {@link Client#futureResponseMap}
+ *  the caller can wait on this completable future
+ *  when response from server arrived, detect the right handler by header response type
+ *  get the requestId, decode the response, get the completable future of this request from {@link Client#futureResponseMap}
+ *  by requestId and complete this future with the encoded response.
+ *  After that, caller can receive the result.
+ *  For example, please see {@link Client#getStockPrice} and {@link Client#handleGetStockPriceResponse(ByteBuf)} ]}
+ */
 public class Client {
 
     private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
@@ -55,10 +68,12 @@ public class Client {
     public void readResponse(ChannelHandlerContext ctx, Object msg) {
         ByteBuf responseByteBuf = (ByteBuf) msg;
         int responseType = responseByteBuf.readInt();
+        //based on the response type => get the right handler and handle
         decoders.get(responseType).handle(responseByteBuf);
     }
 
     private void handleGetStockPriceResponse(ByteBuf responseByteBuf) {
+        //read request id, start parse response
         UUID requestId = ByteBufUtils.readUUID(responseByteBuf);
         responseByteBuf.readByte();
         String responseCode = responseByteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
@@ -74,6 +89,7 @@ public class Client {
             responseByteBuf.readBytes(2);
             response = StockPriceResponse.success(requestId, name, price);
         }
+        //after done parse response => get the completable future of this requestId => complete with parsed response
         futureResponseMap.get(requestId).complete(response);
     }
 
@@ -148,6 +164,7 @@ public class Client {
 
 
     public CompletableFuture<StockPriceResponse> getStockPrice(String stockName) {
+        //Start to encode request
         ByteBuf request = ByteBufAllocator.DEFAULT.buffer(46);
         request.writeInt(MessageType.Request.GET_PRICE);
         UUID requestId = ByteBufUtils.writeUUID(request);
@@ -157,9 +174,13 @@ public class Client {
         }
         request.writeByte('|');
         ByteBufUtils.write20BytesString(request, stockName);
+        //done encode => send to server = write to socket (channel)
         send(request);
+        //Create a completable future to return to caller to wait on this
         CompletableFuture<StockPriceResponse> responseFuture = new CompletableFuture<>();
+        //Put complete future to map, to get when response arrived
         futureResponseMap.put(requestId, responseFuture);
+        // return
         return responseFuture;
     }
 

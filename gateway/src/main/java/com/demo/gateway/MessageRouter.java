@@ -15,6 +15,7 @@ public interface MessageRouter<K> {
 
 
     default CompletableFuture<ByteBuf> handleRaw(K key, ByteBuf input) {
+        //Get the right processor by key and then call process
         if (getProcessors().containsKey(key)) {
             return getProcessors().get(key).process(input);
         }

@@ -27,13 +27,14 @@ public class NettyServer {
     private EventLoopGroup boss = new NioEventLoopGroup();
     private EventLoopGroup work = new NioEventLoopGroup(10);
     private StockBusinessHandler stockBusinessHandler = new StockBusinessHandler();
-    ServerBootstrap serverBootstrap = new ServerBootstrap();
+    private ServerBootstrap serverBootstrap = new ServerBootstrap();
     private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
 
     public void start() {
+        //Dependency injector, I use Guice of Google
         Injector injector = Guice.createInjector(new DependencyInjector());
         KeyIntegerMessageRouter messageHandler = injector.getInstance(KeyIntegerMessageRouter.class);
-
+        //Start initialize server, with some options and handler
         try {
             serverBootstrap
                     .group(boss, work)
@@ -43,12 +44,15 @@ public class NettyServer {
                     .option(ChannelOption.TCP_NODELAY, true)
                     .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
                     .childOption(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+                    //finish add option, start to add handler
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(lengthFieldPrepender);
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
                             ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            //above is just some handler to process common like bye buf length, prepend length...
+                            //Here is our main handler. which will parse request type and choosing the right handler to process the request
                             ch.pipeline().addLast(messageHandler);
                         }
                     });

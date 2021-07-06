@@ -26,6 +26,7 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
                                    GetStockOrderHistoryProcessor getStockOrderHistoryProcessor,
                                    OrderStockProcessor orderStockProcessor,
                                    StockPriceProcessor stockPriceProcessor ) {
+        //Initialize a map with key is messae type, value is processor
         this.prcessors = new HashMap<>();
         prcessors.put(MessageType.Request.GET_PRICE, stockPriceProcessor);
         prcessors.put(MessageType.Request.STOCK_ORDER, orderStockProcessor);
@@ -41,9 +42,12 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        //Read incoming message
         ByteBuf data = (ByteBuf) msg;
+        //Read message type
         int messageType = data.readInt();
         handleRaw(messageType, data)
+                //When handle done, write the result to socket to response to client
                 .thenApply(response -> ctx.writeAndFlush(response))
                 .exceptionally(ex -> {
                     log.error("Error happen when handle input", ex);
