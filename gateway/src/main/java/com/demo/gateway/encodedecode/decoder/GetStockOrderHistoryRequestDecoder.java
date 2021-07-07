@@ -13,11 +13,11 @@ public class GetStockOrderHistoryRequestDecoder implements Decoder<GetStockOrder
     @Override
     public GetStockOrderHistoryRequest decode(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         long clientAccountNo = byteBuf.readLong();
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         LocalDate fromDate = ByteBufUtils.readDate(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         LocalDate toDate = ByteBufUtils.readDate(byteBuf);
         return new GetStockOrderHistoryRequest(requestId, clientAccountNo, fromDate, toDate);
     }

@@ -42,6 +42,7 @@ public interface Processor<I, O> {
      */
     default CompletableFuture<ByteBuf> process(ByteBuf body) {
         I input = decode(body);
+        body.release();
         return getHandler().handle(input)
                 // when handle done, apply encoding response
                 .thenApply(this::encode);

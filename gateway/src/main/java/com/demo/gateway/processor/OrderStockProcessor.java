@@ -10,6 +10,7 @@ import com.demo.gateway.encodedecode.Decoder;
 import com.demo.gateway.encodedecode.Encoder;
 import com.demo.gateway.encodedecode.decoder.GetStockPriceRequestDecoder;
 import com.demo.gateway.encodedecode.decoder.OrderStockRequestDecoder;
+import com.demo.gateway.encodedecode.encoder.OrderStockCompletedEncoder;
 import com.demo.gateway.encodedecode.encoder.OrderStockResponseEncoder;
 import com.demo.gateway.encodedecode.encoder.StockPriceResponseEncoder;
 import com.google.inject.Inject;

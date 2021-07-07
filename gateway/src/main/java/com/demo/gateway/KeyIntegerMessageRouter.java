@@ -1,8 +1,8 @@
 package com.demo.gateway;
 
 import com.demo.common.message.messagetype.MessageType;
-import com.demo.gateway.business.StockBusinessHandler;
-import com.demo.gateway.encodedecode.decoder.GetStockPriceRequestDecoder;
+import com.demo.common.message.stockorder.OrderStockCompleted;
+import com.demo.gateway.encodedecode.Encoder;
 import com.demo.gateway.processor.*;
 import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
@@ -20,19 +20,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implements MessageRouter<Integer> {
 
     private Map<Integer, Processor> prcessors;
+    private Encoder<OrderStockCompleted> orderStockCompletedEncoder;
 
     @Inject
     public KeyIntegerMessageRouter(CancelStockOrderProcessor cancelStockOrderProcessor,
                                    GetStockOrderHistoryProcessor getStockOrderHistoryProcessor,
                                    OrderStockProcessor orderStockProcessor,
-                                   StockPriceProcessor stockPriceProcessor ) {
+                                   StockPriceProcessor stockPriceProcessor,
+                                   Encoder<OrderStockCompleted> orderStockCompletedEncoder) {
         //Initialize a map with key is messae type, value is processor
         this.prcessors = new HashMap<>();
         prcessors.put(MessageType.Request.GET_PRICE, stockPriceProcessor);
         prcessors.put(MessageType.Request.STOCK_ORDER, orderStockProcessor);
         prcessors.put(MessageType.Request.CANCEL_ORDER, cancelStockOrderProcessor);
         prcessors.put(MessageType.Request.GET_HISTORY, getStockOrderHistoryProcessor);
-
+        this.orderStockCompletedEncoder = orderStockCompletedEncoder;
     }
 
 
@@ -48,7 +50,18 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
         int messageType = data.readInt();
         handleRaw(messageType, data)
                 //When handle done, write the result to socket to response to client
-                .thenApply(response -> ctx.writeAndFlush(response))
+                .thenAccept(response -> {
+                    ctx.writeAndFlush(response);
+                })
+                // If message type is order stock request, send order stock complete, to simulate, just for demo
+                .thenAccept(rs -> {
+                    if (messageType != MessageType.Request.STOCK_ORDER) {
+                        return;
+                    }
+                    OrderStockCompleted completed = new OrderStockCompleted(123L);
+                    ByteBuf encoded = orderStockCompletedEncoder.encode(completed);
+                    ctx.writeAndFlush(encoded);
+                })
                 .exceptionally(ex -> {
                     log.error("Error happen when handle input", ex);
                     ctx.writeAndFlush("Error happen");

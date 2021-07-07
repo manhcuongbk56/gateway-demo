@@ -1,6 +1,7 @@
 package com.demo.common.utils;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.util.CharsetUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -19,8 +20,15 @@ public class ByteBufUtils {
 
     public static UUID readUUID(ByteBuf byteBuf) {
         UUID requestId = new UUID(byteBuf.readLong(), byteBuf.readLong());
-        byteBuf.readBytes(24);
+        byteBuf.skipBytes(24);
         return requestId;
+    }
+
+    public static String readString(ByteBuf byteBuf, int length) {
+        ByteBuf stringByteBuf = byteBuf.readBytes(length);
+        String aString = stringByteBuf.toString(CharsetUtil.UTF_8);
+        stringByteBuf.release();
+        return aString;
     }
 
     public static UUID writeUUID(ByteBuf byteBuf){

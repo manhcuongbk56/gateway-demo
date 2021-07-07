@@ -4,6 +4,8 @@ import com.demo.gateway.business.StockBusinessHandler;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
@@ -42,8 +44,8 @@ public class NettyServer {
                     .localAddress(new InetSocketAddress(GATEWAY_HORT, GATEWAY_PORT))
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
-                    .childOption(ChannelOption.ALLOCATOR, UnpooledByteBufAllocator.DEFAULT)
+                    .option(ChannelOption.ALLOCATOR,  ByteBufAllocator.DEFAULT)
+                    .childOption(ChannelOption.ALLOCATOR,  ByteBufAllocator.DEFAULT)
                     //finish add option, start to add handler
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override

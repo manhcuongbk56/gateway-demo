@@ -5,6 +5,7 @@ import com.demo.common.message.cancelorder.CancelStockOrderRequest;
 import com.demo.common.message.cancelorder.CancelStockOrderResponse;
 import com.demo.common.message.orderhistory.GetStockOrderHistoryRequest;
 import com.demo.common.message.orderhistory.GetStockOrderHistoryResponse;
+import com.demo.common.message.stockorder.OrderStockCompleted;
 import com.demo.common.message.stockorder.OrderStockRequest;
 import com.demo.common.message.stockorder.OrderStockResponse;
 import com.demo.common.message.stockprice.GetStockPriceRequest;
@@ -15,7 +16,6 @@ import com.squareup.okhttp.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -87,7 +87,7 @@ public class StockBusinessHandler {
 
     public CompletableFuture<GetStockOrderHistoryResponse> getStockOrderHistory(GetStockOrderHistoryRequest request) {
         if (isShouldSuccess()) {
-            return CompletableFuture.completedFuture(generateSimple(request.getRequestId()));
+            return CompletableFuture.completedFuture(generateSimpleHistory(request.getRequestId()));
         }
         return CompletableFuture.completedFuture(GetStockOrderHistoryResponse.builder()
                         .requestId(request.getRequestId())
@@ -95,7 +95,13 @@ public class StockBusinessHandler {
                 .build());
     }
 
-    private GetStockOrderHistoryResponse generateSimple(UUID requestId) {
+    public CompletableFuture<OrderStockCompleted> stockOrderCompleted(Object unused) {
+        OrderStockCompleted orderStockCompleted = new OrderStockCompleted(123L);
+        return CompletableFuture.completedFuture(orderStockCompleted);
+    }
+
+
+    private GetStockOrderHistoryResponse generateSimpleHistory(UUID requestId) {
         GetStockOrderHistoryResponse.StockOrderInfo info1 = GetStockOrderHistoryResponse.StockOrderInfo.builder()
                 .stock("ABC")
                 .sellOrBuy("sell")

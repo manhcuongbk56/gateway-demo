@@ -12,13 +12,13 @@ public class OrderStockRequestDecoder implements Decoder<OrderStockRequest> {
     @Override
     public OrderStockRequest decode(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         String stockName = ByteBufUtils.read20BytesString(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         String sellOrBuy = ByteBufUtils.read20BytesString(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         long quantity = byteBuf.readLong();
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         double price = byteBuf.readDouble();
         return new OrderStockRequest(requestId, stockName, sellOrBuy, quantity, price);
     }

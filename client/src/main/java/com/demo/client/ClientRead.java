@@ -1,6 +1,7 @@
 package com.demo.client;
 
 import com.demo.common.constant.ResponseCode;
+import com.demo.common.utils.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -22,18 +23,18 @@ public class ClientRead extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         log.info("receive total {} response", count.incrementAndGet());
         ByteBuf response = (ByteBuf)msg;
-        UUID requestId = new UUID(response.readLong(), response.readLong());
-        response.readBytes(25);
-        String responseCode = response.readBytes(4).toString(CharsetUtil.UTF_8);
+        UUID requestId = ByteBufUtils.readUUID(response);
+        response.skipBytes(1);
+        String responseCode = ByteBufUtils.readString(response, 4);
         if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())){
             log.info("Request fail: requestId {}, responseCode {}", requestId, responseCode);
             return;
         }
-        response.readByte();
-        String name = response.readBytes(20).toString(CharsetUtil.UTF_8).trim();
-        response.readByte();
+        response.skipBytes(1);
+        String name = ByteBufUtils.read20BytesString(response);
+        response.skipBytes(1);
         double price = response.readDouble();
-        response.readBytes(2);
+        response.skipBytes(2);
         response.release();
         log.info("Request Success: requestId {}, responseCode {} stock name {} stockPrice {}", requestId,
                 responseCode, name, price);

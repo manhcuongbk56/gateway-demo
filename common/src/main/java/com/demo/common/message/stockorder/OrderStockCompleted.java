@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderStockCompleted {
-    private String responseCode;
     private long orderNo;
 
 }

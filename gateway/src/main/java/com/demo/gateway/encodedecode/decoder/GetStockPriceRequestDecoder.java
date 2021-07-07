@@ -15,7 +15,7 @@ public class GetStockPriceRequestDecoder implements Decoder<GetStockPriceRequest
     @Override
     public GetStockPriceRequest decode(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readBytes(1 + 4 + 1);
+        byteBuf.skipBytes(1 + 4 + 1);
         String itemName = ByteBufUtils.read20BytesString(byteBuf);
         return new GetStockPriceRequest(requestId, itemName);
     }

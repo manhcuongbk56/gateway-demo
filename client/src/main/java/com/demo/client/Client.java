@@ -36,7 +36,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *  get the requestId, decode the response, get the completable future of this request from {@link Client#futureResponseMap}
  *  by requestId and complete this future with the encoded response.
  *  After that, caller can receive the result.
- *  For example, please see {@link Client#getStockPrice} and {@link Client#handleGetStockPriceResponse(ByteBuf)} ]}
+ *  For example, please see {@link Client#getStockPrice} and {@link Client#handleGetStockPriceResponse(ByteBuf)}
  */
 public class Client {
 
@@ -73,30 +73,30 @@ public class Client {
     }
 
     private void handleGetStockPriceResponse(ByteBuf responseByteBuf) {
-        //read request id, start parse response
+        //read request id, start encode response
         UUID requestId = ByteBufUtils.readUUID(responseByteBuf);
-        responseByteBuf.readByte();
-        String responseCode = responseByteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
+        responseByteBuf.skipBytes(1);
+        String responseCode = ByteBufUtils.readString(responseByteBuf, 4);
         StockPriceResponse response;
         if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())) {
             log.info("Request fail: requestId {}, responseCode {}", requestId, responseCode);
             response = StockPriceResponse.fail(requestId);
         } else {
-            responseByteBuf.readByte();
-            String name = responseByteBuf.readBytes(20).toString(CharsetUtil.UTF_8).trim();
-            responseByteBuf.readByte();
+            responseByteBuf.skipBytes(1);
+            String name = ByteBufUtils.read20BytesString(responseByteBuf);
+            responseByteBuf.skipBytes(1);
             double price = responseByteBuf.readDouble();
-            responseByteBuf.readBytes(2);
+            responseByteBuf.skipBytes(2);
             response = StockPriceResponse.success(requestId, name, price);
         }
-        //after done parse response => get the completable future of this requestId => complete with parsed response
+        //after done encode response => get the completable future of this requestId => complete with parsed response
         futureResponseMap.get(requestId).complete(response);
     }
 
     private void handleCancelStockOrderResponse(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readByte();
-        String responseCode = byteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
+        byteBuf.skipBytes(1);
+        String responseCode = ByteBufUtils.readString(byteBuf, 4);
         CancelStockOrderResponse response = new CancelStockOrderResponse(requestId, responseCode);
         futureResponseMap.get(requestId).complete(response);
     }
@@ -104,35 +104,35 @@ public class Client {
     @SuppressWarnings("unchecked")
     private void handleGetStockOrderHistoryResponse(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         int totalDay = byteBuf.readInt();
-         List<GetStockOrderHistoryResponse.DayHistory> days = new ArrayList<>(totalDay);
-        for (int i = 0; i< totalDay; i++){
+        List<GetStockOrderHistoryResponse.DayHistory> days = new ArrayList<>(totalDay);
+        for (int i = 0; i < totalDay; i++) {
             days.add(parseDayHistory(byteBuf));
         }
         GetStockOrderHistoryResponse response = new GetStockOrderHistoryResponse(requestId, days);
         futureResponseMap.get(requestId).complete(response);
     }
 
-    private GetStockOrderHistoryResponse.DayHistory parseDayHistory(ByteBuf byteBuf){
+    private GetStockOrderHistoryResponse.DayHistory parseDayHistory(ByteBuf byteBuf) {
         int size = byteBuf.readInt();
         LocalDate day = ByteBufUtils.readDate(byteBuf);
         List<GetStockOrderHistoryResponse.StockOrderInfo> orders = new ArrayList<>(size);
-        for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             orders.add(parseStockOrderInfo(byteBuf));
         }
         return new GetStockOrderHistoryResponse.DayHistory(day, orders);
     }
 
-    private GetStockOrderHistoryResponse.StockOrderInfo parseStockOrderInfo(ByteBuf byteBuf){
+    private GetStockOrderHistoryResponse.StockOrderInfo parseStockOrderInfo(ByteBuf byteBuf) {
         String stockName = ByteBufUtils.read20BytesString(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         String sellOrBuy = ByteBufUtils.read20BytesString(byteBuf);
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         long quantity = byteBuf.readLong();
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         double price = byteBuf.readDouble();
-        byteBuf.readByte();
+        byteBuf.skipBytes(1);
         boolean isSuccess = byteBuf.readBoolean();
         return new GetStockOrderHistoryResponse.StockOrderInfo(stockName, sellOrBuy, quantity, price, isSuccess);
     }
@@ -146,21 +146,19 @@ public class Client {
 
     private void handleOrderStockResponse(ByteBuf byteBuf) {
         UUID requestId = ByteBufUtils.readUUID(byteBuf);
-        byteBuf.readByte();
-        String responseCode = byteBuf.readBytes(4).toString(CharsetUtil.UTF_8);
+        byteBuf.skipBytes(1);
+        String responseCode = ByteBufUtils.readString(byteBuf, 4);
         OrderStockResponse response;
         if (Objects.equals(responseCode, ResponseCode.FAIL.getCode())) {
             log.info("Request fail: requestId {}, responseCode {}", requestId, responseCode);
             response = OrderStockResponse.fail(requestId);
         } else {
-            byteBuf.readByte();
+            byteBuf.skipBytes(1);
             long orderNo = byteBuf.readLong();
             response = OrderStockResponse.success(requestId, orderNo);
         }
         futureResponseMap.get(requestId).complete(response);
     }
-
-
 
 
     public CompletableFuture<StockPriceResponse> getStockPrice(String stockName) {
@@ -175,11 +173,12 @@ public class Client {
         request.writeByte('|');
         ByteBufUtils.write20BytesString(request, stockName);
         //done encode => send to server = write to socket (channel)
-        send(request);
         //Create a completable future to return to caller to wait on this
         CompletableFuture<StockPriceResponse> responseFuture = new CompletableFuture<>();
-        //Put complete future to map, to get when response arrived
+        //Put complete future to map, to get when response arrived, should put before send to guarantee when response arrive, our response map
+        // already have the completable future of response.
         futureResponseMap.put(requestId, responseFuture);
+        send(request);
         // return
         return responseFuture;
     }
@@ -196,9 +195,9 @@ public class Client {
         request.writeLong(quantity);
         request.writeByte('|');
         request.writeDouble(price);
-        send(request);
         CompletableFuture<OrderStockResponse> responseFuture = new CompletableFuture<>();
         futureResponseMap.put(requestId, responseFuture);
+        send(request);
         return responseFuture;
     }
 
@@ -208,9 +207,9 @@ public class Client {
         UUID requestId = ByteBufUtils.writeUUID(request);
         request.writeByte('|');
         request.writeLong(orderNo);
-        send(request);
         CompletableFuture<CancelStockOrderResponse> responseFuture = new CompletableFuture<>();
         futureResponseMap.put(requestId, responseFuture);
+        send(request);
         return responseFuture;
     }
 
@@ -224,9 +223,9 @@ public class Client {
         ByteBufUtils.writeDate(request, fromDate);
         request.writeByte('|');
         ByteBufUtils.writeDate(request, toDate);
-        send(request);
         CompletableFuture<GetStockOrderHistoryResponse> responseFuture = new CompletableFuture<>();
         futureResponseMap.put(requestId, responseFuture);
+        send(request);
         return responseFuture;
     }
 
