@@ -8,7 +8,6 @@ import com.demo.gateway.encodedecode.Decoder;
 import com.demo.gateway.encodedecode.Encoder;
 import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
 
 public class CancelStockOrderProcessor implements Processor<CancelStockOrderRequest, CancelStockOrderResponse> {
 

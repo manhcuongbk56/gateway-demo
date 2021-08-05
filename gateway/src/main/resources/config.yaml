@@ -1,0 +1,7 @@
+httpClient:
+  clientType: OKHTTP_ASYNC
+  maxConnection: 10
+  keepAliveTime: 100
+  connectTimeOut: 100
+  readTimeout: 100
+  writeTimeout: 100

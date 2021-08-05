@@ -1,12 +1,9 @@
 package com.demo.gateway;
 
-import com.demo.gateway.business.StockBusinessHandler;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.UnpooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -26,15 +23,14 @@ import java.util.concurrent.TimeUnit;
 public class NettyServer {
     private static final int GATEWAY_PORT = 6969;
     private static final String GATEWAY_HORT = "localhost";
-    private EventLoopGroup boss = new NioEventLoopGroup();
-    private EventLoopGroup work = new NioEventLoopGroup(10);
-    private StockBusinessHandler stockBusinessHandler = new StockBusinessHandler();
-    private ServerBootstrap serverBootstrap = new ServerBootstrap();
-    private static LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
+    private static final LengthFieldPrepender lengthFieldPrepender = new LengthFieldPrepender(4);
+    private final EventLoopGroup boss = new NioEventLoopGroup();
+    private final EventLoopGroup work = new NioEventLoopGroup(10);
+    private final ServerBootstrap serverBootstrap = new ServerBootstrap();
 
-    public void start() {
+    public void start(GatewayConfiguration gatewayConfiguration) {
         //Dependency injector, I use Guice of Google
-        Injector injector = Guice.createInjector(new DependencyInjector());
+        Injector injector = Guice.createInjector(new DependencyInjector(gatewayConfiguration));
         KeyIntegerMessageRouter messageHandler = injector.getInstance(KeyIntegerMessageRouter.class);
         //Start initialize server, with some options and handler
         try {
@@ -44,15 +40,15 @@ public class NettyServer {
                     .localAddress(new InetSocketAddress(GATEWAY_HORT, GATEWAY_PORT))
                     .option(ChannelOption.SO_KEEPALIVE, true)
                     .option(ChannelOption.TCP_NODELAY, true)
-                    .option(ChannelOption.ALLOCATOR,  ByteBufAllocator.DEFAULT)
-                    .childOption(ChannelOption.ALLOCATOR,  ByteBufAllocator.DEFAULT)
+                    .option(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
+                    .childOption(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT)
                     //finish add option, start to add handler
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(lengthFieldPrepender);
                             ch.pipeline().addLast(new IdleStateHandler(0, 0, 300, TimeUnit.SECONDS));
-                            ch.pipeline().addLast( new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(Integer.MAX_VALUE, 0, 4, 0, 4));
                             //above is just some handler to process common like bye buf length, prepend length...
                             //Here is our main handler. which will parse request type and choosing the right handler to process the request
                             ch.pipeline().addLast(messageHandler);

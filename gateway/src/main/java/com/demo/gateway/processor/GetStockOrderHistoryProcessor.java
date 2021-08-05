@@ -8,13 +8,12 @@ import com.demo.gateway.encodedecode.Decoder;
 import com.demo.gateway.encodedecode.Encoder;
 import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
-import lombok.AllArgsConstructor;
 
 public class GetStockOrderHistoryProcessor implements Processor<GetStockOrderHistoryRequest, GetStockOrderHistoryResponse> {
 
-    private Decoder<GetStockOrderHistoryRequest> decoder;
-    private StockBusinessHandler handler;
-    private Encoder<GetStockOrderHistoryResponse> encoder;
+    private final Decoder<GetStockOrderHistoryRequest> decoder;
+    private final StockBusinessHandler handler;
+    private final Encoder<GetStockOrderHistoryResponse> encoder;
 
     @Inject
     public GetStockOrderHistoryProcessor(Decoder<GetStockOrderHistoryRequest> decoder, StockBusinessHandler handler, Encoder<GetStockOrderHistoryResponse> encoder) {
