@@ -1,5 +1,5 @@
 httpClient:
-  clientType: OKHTTP_ASYNC
+  clientType: APACHE_ASYNC
   maxConnection: 10
   keepAliveTime: 100
   connectTimeOut: 100

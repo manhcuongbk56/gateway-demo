@@ -2,7 +2,6 @@ package com.demo.client;
 
 import lombok.extern.log4j.Log4j2;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -13,7 +12,7 @@ public class ClientMain {
 
     private static final String GATEWAY_SERVER_HOST = "localhost";
     private static final int GATEWAY_SERVER_PORT = 6969;
-    private static final int CLIENT_QUANTITY = 1000;
+    private static final int CLIENT_QUANTITY = 1;
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         ClientManager clientManager = new ClientManager(GATEWAY_SERVER_HOST, GATEWAY_SERVER_PORT);
@@ -34,40 +33,40 @@ public class ClientMain {
                         log.error("Error happen.", ex);
                         return null;
                     }));
-            responseFutures.add(client.orderStock("ABC", "sell", 10L, 1.5)
-                    .thenAccept(rs -> {
-                        log.info("Order stock Response: {}", rs);
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Error happen.", ex);
-                        return null;
-                    }));
-            responseFutures.add(client.cancelStockOrderRequest(123l)
-                    .thenAccept(rs -> {
-                        log.info("Cancel Stock order Response: {}", rs);
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Error happen.", ex);
-                        return null;
-                    }));
-            responseFutures.add(client.getOrderHistory(123l, LocalDate.now(), LocalDate.now())
-                    .thenAccept(rs -> {
-                        log.info("Stock History Response: {}", rs);
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Error happen.", ex);
-                        return null;
-                    }));
+//            responseFutures.add(client.orderStock("ABC", "sell", 10L, 1.5)
+//                    .thenAccept(rs -> {
+//                        log.info("Order stock Response: {}", rs);
+//                    })
+//                    .exceptionally(ex -> {
+//                        log.error("Error happen.", ex);
+//                        return null;
+//                    }));
+//            responseFutures.add(client.cancelStockOrderRequest(123l)
+//                    .thenAccept(rs -> {
+//                        log.info("Cancel Stock order Response: {}", rs);
+//                    })
+//                    .exceptionally(ex -> {
+//                        log.error("Error happen.", ex);
+//                        return null;
+//                    }));
+//            responseFutures.add(client.getOrderHistory(123l, LocalDate.now(), LocalDate.now())
+//                    .thenAccept(rs -> {
+//                        log.info("Stock History Response: {}", rs);
+//                    })
+//                    .exceptionally(ex -> {
+//                        log.error("Error happen.", ex);
+//                        return null;
+//                    }));
         }
         CompletableFuture[] all = new CompletableFuture[responseFutures.size()];
-        for (int i = 0; i < responseFutures.size(); i++){
+        for (int i = 0; i < responseFutures.size(); i++) {
             all[i] = responseFutures.get(i);
         }
         //Gather all response futures, call get => only return when all request is done.
         CompletableFuture.allOf(all).get();
         log.warn("RECEIVE ALL RESPONSE");
         //never exit to monitoring connected client on gateway server
-        while (true){
+        while (true) {
             Thread.sleep(2000l);
         }
     }

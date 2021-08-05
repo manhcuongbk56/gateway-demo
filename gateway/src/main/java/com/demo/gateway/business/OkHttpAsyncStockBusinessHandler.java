@@ -5,6 +5,7 @@ import com.demo.common.message.stockprice.StockPriceResponse;
 import com.demo.gateway.GatewayConfiguration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.squareup.okhttp.*;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 import java.util.Random;
@@ -13,7 +14,8 @@ import java.util.concurrent.TimeUnit;
 
 import static com.demo.gateway.util.JsonUtils.MAPPER;
 
-public class OkHttpStockBusinessHandler implements StockBusinessHandler {
+@Log4j2
+public class OkHttpAsyncStockBusinessHandler implements StockBusinessHandler {
 
     public static final String PRICE_URL = "http://localhost:8080/price";
     public static final MediaType JSON
@@ -21,7 +23,7 @@ public class OkHttpStockBusinessHandler implements StockBusinessHandler {
     private final Random rand = new Random();
     private final OkHttpClient client;
 
-    public OkHttpStockBusinessHandler(GatewayConfiguration.HttpClientConfiguration config) {
+    public OkHttpAsyncStockBusinessHandler(GatewayConfiguration.HttpClientConfiguration config) {
         ConnectionPool connectionPool = new ConnectionPool(config.getMaxConnection(), config.getKeepAliveTime());
         this.client = new OkHttpClient();
         client.setConnectionPool(connectionPool);
@@ -32,6 +34,7 @@ public class OkHttpStockBusinessHandler implements StockBusinessHandler {
 
     @Override
     public CompletableFuture<StockPriceResponse> getPrice(GetStockPriceRequest getStockPriceRequest) {
+        log.info("Call from ok http async");
         byte[] body;
         try {
             body = MAPPER.writeValueAsBytes(getStockPriceRequest);

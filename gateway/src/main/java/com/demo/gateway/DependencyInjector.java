@@ -9,8 +9,7 @@ import com.demo.common.message.stockorder.OrderStockRequest;
 import com.demo.common.message.stockorder.OrderStockResponse;
 import com.demo.common.message.stockprice.GetStockPriceRequest;
 import com.demo.common.message.stockprice.StockPriceResponse;
-import com.demo.gateway.business.OkHttpStockBusinessHandler;
-import com.demo.gateway.business.StockBusinessHandler;
+import com.demo.gateway.business.*;
 import com.demo.gateway.encodedecode.Decoder;
 import com.demo.gateway.encodedecode.Encoder;
 import com.demo.gateway.encodedecode.decoder.CancelStockOrderRequestDecoder;
@@ -80,7 +79,13 @@ public class DependencyInjector extends AbstractModule {
         GatewayConfiguration.HttpClientConfiguration httpConfig = gatewayConfiguration.getHttpClient();
         switch (httpConfig.getClientType()) {
             case OKHTTP_ASYNC:
-                return new OkHttpStockBusinessHandler(httpConfig);
+                return new OkHttpAsyncStockBusinessHandler(httpConfig);
+            case OKHTTP_SYNC:
+                return new OkHttpSyncStockBusinessHandler(httpConfig);
+            case APACHE_ASYNC:
+                return new ApacheAsyncStockBusinessHandler(httpConfig);
+            case APACHE_SYNC:
+                return new ApacheSyncStockBusinessHandler(httpConfig);
             default:
                 throw new IllegalArgumentException("client type of http config not match");
         }

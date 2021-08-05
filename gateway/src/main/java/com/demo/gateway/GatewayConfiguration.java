@@ -17,11 +17,6 @@ public class GatewayConfiguration {
         APACHE_ASYNC,
         NETTY_ASYNC
 
-//        @JsonCreator
-//        public static ClientType forValue(String value) {
-//            return ClientType.valueOf(value);
-//        }
-
     }
 
     @Getter
@@ -33,6 +28,8 @@ public class GatewayConfiguration {
         private long connectTimeOut;
         private long readTimeout;
         private long writeTimeout;
+        private boolean tcpNoDelay;
+        private boolean tcpKeepAlive;
 
     }
 
