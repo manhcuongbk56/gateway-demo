@@ -17,7 +17,6 @@ import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
 import org.apache.hc.core5.concurrent.FutureCallback;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.Method;
-import org.apache.hc.core5.http.io.SocketConfig;
 
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -35,7 +34,6 @@ public class ApacheAsyncStockBusinessHandler implements StockBusinessHandler {
     private final CloseableHttpAsyncClient client;
     private final PoolingAsyncClientConnectionManager connectionManager;
     private final RequestConfig requestConfig;
-    private final SocketConfig socketConfig;
 
     public ApacheAsyncStockBusinessHandler(GatewayConfiguration.HttpClientConfiguration config) {
 
@@ -44,10 +42,6 @@ public class ApacheAsyncStockBusinessHandler implements StockBusinessHandler {
                 .setConnectTimeout(config.getConnectTimeOut(), TimeUnit.MILLISECONDS)
                 .setDefaultKeepAlive(config.getKeepAliveTime(), TimeUnit.MILLISECONDS)
                 .setResponseTimeout(config.getReadTimeout(), TimeUnit.MILLISECONDS)
-                .build();
-        socketConfig = SocketConfig.custom()
-                .setTcpNoDelay(config.isTcpNoDelay())
-                .setSoKeepAlive(config.isTcpKeepAlive())
                 .build();
         connectionManager.setMaxTotal(config.getMaxConnection());
         client = HttpAsyncClients.custom()

@@ -1,6 +1,7 @@
 httpClient:
   clientType: APACHE_ASYNC
   maxConnection: 10
+  # all time config is millisecond unit.
   keepAliveTime: 100
   connectTimeOut: 100
   readTimeout: 100

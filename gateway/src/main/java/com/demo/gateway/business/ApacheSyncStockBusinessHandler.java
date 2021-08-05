@@ -15,7 +15,6 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManager;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.SocketConfig;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
@@ -37,7 +36,6 @@ public class ApacheSyncStockBusinessHandler implements StockBusinessHandler {
     private final CloseableHttpClient client;
     private final PoolingHttpClientConnectionManager connectionManager;
     private final RequestConfig requestConfig;
-    private final SocketConfig socketConfig;
 
     public ApacheSyncStockBusinessHandler(GatewayConfiguration.HttpClientConfiguration config) {
         connectionManager = new PoolingHttpClientConnectionManager();
@@ -46,12 +44,7 @@ public class ApacheSyncStockBusinessHandler implements StockBusinessHandler {
                 .setDefaultKeepAlive(config.getKeepAliveTime(), TimeUnit.MILLISECONDS)
                 .setResponseTimeout(config.getReadTimeout(), TimeUnit.MILLISECONDS)
                 .build();
-        socketConfig = SocketConfig.custom()
-                .setTcpNoDelay(config.isTcpNoDelay())
-                .setSoKeepAlive(config.isTcpKeepAlive())
-                .build();
         connectionManager.setMaxTotal(config.getMaxConnection());
-        connectionManager.setDefaultSocketConfig(socketConfig);
         client = HttpClients.custom()
                 .setConnectionManager(connectionManager)
                 .setDefaultRequestConfig(requestConfig)

@@ -15,7 +15,6 @@ public class GatewayConfiguration {
         OKHTTP_ASYNC,
         APACHE_SYNC,
         APACHE_ASYNC,
-        NETTY_ASYNC
 
     }
 
@@ -28,8 +27,6 @@ public class GatewayConfiguration {
         private long connectTimeOut;
         private long readTimeout;
         private long writeTimeout;
-        private boolean tcpNoDelay;
-        private boolean tcpKeepAlive;
 
     }
 

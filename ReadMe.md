@@ -1,26 +1,42 @@
 # A Demo gateway written in Java using Netty
+
 To run this app, you need to install Java 8, Maven. Run these apps below as:
 Simpler server -> gateway -> client
+
 ## Simple server
+
 Using Spring boot, accept http request and just return the response with error rate is 10%. Run on default port 8080.
+
 ## Gateway
-Using Netty
-Gateway address config variable live in *com.demo.gateway.NettyServer*
+
+Using Netty Gateway address config variable live in *com.demo.gateway.NettyServer*
+
 ```java
-    private static final int GATEWAY_PORT = 6969;
-    private static final String GATEWAY_HORT = "localhost";
+    private static final int GATEWAY_PORT=6969;
+private static final String GATEWAY_HORT="localhost";
 ```
+
 We need to point gateway to server, change the variable in *com.demo.gateway.service.GetPriceService* if needed
+
 ```java
-    public static final String PRICE_URL = "http://localhost:8080/price";
+    public static final String PRICE_URL="http://localhost:8080/price";
 ```
+
+### Gateway have a http client to connect to simple server
+
+We can choose which kind of client to use in config file.\
+Change config in **gateway/src/main/resources/config.yaml** \
+The **clientType** in config file can be reference from **com.demo.gateway.GatewayConfiguration.ClientType**
+
 ## Client
-Using Netty.
-Config variable to point to gateway and number of client live in ClientMain.java
+
+Using Netty. Config variable to point to gateway and number of client live in ClientMain.java
+
 ```java
-    private static final String GATEWAY_SERVER_HOST = "localhost";
-    private static final int GATEWAY_SERVER_PORT = 6969;
-    private static final int NUM_OF_CLIENT = 200;
+    private static final String GATEWAY_SERVER_HOST="localhost";
+private static final int GATEWAY_SERVER_PORT=6969;
+private static final int NUM_OF_CLIENT=200;
 ```
+
 Each client will send a message to gateway and print response when receiving. 
 
