@@ -86,6 +86,8 @@ public class DependencyInjector extends AbstractModule {
                 return new ApacheAsyncStockBusinessHandler(httpConfig);
             case APACHE_SYNC:
                 return new ApacheSyncStockBusinessHandler(httpConfig);
+            case SIMPLE:
+                return new SimpleBusinessHandler(httpConfig);
             default:
                 throw new IllegalArgumentException("client type of http config not match");
         }

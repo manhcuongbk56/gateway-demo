@@ -9,8 +9,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramPacket;
 import lombok.extern.log4j.Log4j2;
 
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -38,29 +40,22 @@ public class KeyIntegerMessageRouter extends ChannelInboundHandlerAdapter implem
     }
 
 
-    private AtomicInteger requestCount = new AtomicInteger(0);
-    private AtomicInteger responseCount = new AtomicInteger(0);
-    private AtomicInteger connections = new AtomicInteger(0);
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //Read incoming message
-        ByteBuf data = (ByteBuf) msg;
+        DatagramPacket packet = (DatagramPacket) msg;
+        ByteBuf data = packet.content();
+        InetSocketAddress sender = packet.sender();
+        if (data.readableBytes() <= 0){
+            return;
+        }
         //Read message type
         int messageType = data.readInt();
         handleRaw(messageType, data)
                 //When handle done, write the result to socket to response to client
                 .thenAccept(response -> {
-                    ctx.writeAndFlush(response);
-                })
-                // If message type is order stock request, send order stock complete, to simulate, just for demo
-                .thenAccept(rs -> {
-                    if (messageType != MessageType.Request.STOCK_ORDER) {
-                        return;
-                    }
-                    OrderStockCompleted completed = new OrderStockCompleted(123L);
-                    ByteBuf encoded = orderStockCompletedEncoder.encode(completed);
-                    ctx.writeAndFlush(encoded);
+                    ctx.writeAndFlush(new DatagramPacket(response, sender));
                 })
                 .exceptionally(ex -> {
                     log.error("Error happen when handle input", ex);

@@ -14,6 +14,7 @@ public class GatewayConfiguration {
         OKHTTP_SYNC,
         OKHTTP_ASYNC,
         APACHE_SYNC,
+        SIMPLE,
         APACHE_ASYNC,
 
     }

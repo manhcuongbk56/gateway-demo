@@ -12,6 +12,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.util.CharsetUtil;
@@ -66,7 +67,11 @@ public class Client {
     }
 
     public void readResponse(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf responseByteBuf = (ByteBuf) msg;
+        DatagramPacket datagramPacket = (DatagramPacket) msg;
+        ByteBuf responseByteBuf = datagramPacket.content();
+        if (responseByteBuf.readableBytes() <= 0){
+            return;
+        }
         int responseType = responseByteBuf.readInt();
         //based on the response type => get the right handler and handle
         decoders.get(responseType).handle(responseByteBuf);
@@ -179,6 +184,7 @@ public class Client {
         // already have the completable future of response.
         futureResponseMap.put(requestId, responseFuture);
         send(request);
+        log.info("Done send request to server");
         // return
         return responseFuture;
     }

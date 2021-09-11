@@ -7,6 +7,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.extern.log4j.Log4j2;
 
@@ -24,11 +25,11 @@ public class ClientManager {
         try {
             bootstrap = new Bootstrap(); // (1)
             bootstrap.group(workerGroup); // (2)
-            bootstrap.channel(NioSocketChannel.class); // (3)
+            bootstrap.channel(NioDatagramChannel.class); // (3)
             bootstrap.option(ChannelOption.SO_KEEPALIVE, true); // (4)
-            bootstrap.handler(new ChannelInitializer<SocketChannel>() {
+            bootstrap.handler(new ChannelInitializer<NioDatagramChannel>() {
                 @Override
-                public void initChannel(SocketChannel ch) {
+                public void initChannel(NioDatagramChannel ch) {
                 }
             });
         } catch (Exception ex){
