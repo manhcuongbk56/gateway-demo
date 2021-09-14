@@ -23,7 +23,6 @@ public class ClientMain {
         }
         log.warn("Done create {} clients, connected to server", CLIENT_QUANTITY);
         List<CompletableFuture> responseFutures = new ArrayList<>();
-        //With each client, call 4 request to server and then add response future to responseFutures
         for (Client client : clients) {
             responseFutures.add(client.getStockPrice("LOL")
                     .thenAccept(rs -> {
@@ -33,30 +32,6 @@ public class ClientMain {
                         log.error("Error happen.", ex);
                         return null;
                     }));
-//            responseFutures.add(client.orderStock("ABC", "sell", 10L, 1.5)
-//                    .thenAccept(rs -> {
-//                        log.info("Order stock Response: {}", rs);
-//                    })
-//                    .exceptionally(ex -> {
-//                        log.error("Error happen.", ex);
-//                        return null;
-//                    }));
-//            responseFutures.add(client.cancelStockOrderRequest(123l)
-//                    .thenAccept(rs -> {
-//                        log.info("Cancel Stock order Response: {}", rs);
-//                    })
-//                    .exceptionally(ex -> {
-//                        log.error("Error happen.", ex);
-//                        return null;
-//                    }));
-//            responseFutures.add(client.getOrderHistory(123l, LocalDate.now(), LocalDate.now())
-//                    .thenAccept(rs -> {
-//                        log.info("Stock History Response: {}", rs);
-//                    })
-//                    .exceptionally(ex -> {
-//                        log.error("Error happen.", ex);
-//                        return null;
-//                    }));
         }
         CompletableFuture[] all = new CompletableFuture[responseFutures.size()];
         for (int i = 0; i < responseFutures.size(); i++) {

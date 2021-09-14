@@ -1,0 +1,62 @@
+A3:
+  fields:
+    - name: InformationType
+      dataType: TEXT
+      length: 2
+    - name: MarketType
+      dataType: TEXT
+      length: 1
+    - name: IssueCode
+      dataType: TEXT
+      length: 12
+    - name: IssueSeqNo
+      dataType: TEXT
+      length: 12
+    - name: BoardId
+      dataType: TEXT
+      length: 2
+    - name: CurrentPrice
+      dataType: NUMBER
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10
+    - name: InformationType
+      dataType: TEXT
+      length: 10

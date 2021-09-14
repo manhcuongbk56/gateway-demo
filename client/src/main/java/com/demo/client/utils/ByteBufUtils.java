@@ -1,4 +1,4 @@
-package com.demo.common.utils;
+package com.demo.client.utils;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.util.CharsetUtil;
@@ -31,18 +31,12 @@ public class ByteBufUtils {
         return aString;
     }
 
-    public static double readNumber(ByteBuf byteBuf, int length) {
-        ByteBuf stringByteBuf = byteBuf.readBytes(length);
-        String aString = stringByteBuf.toString(CharsetUtil.UTF_8);
-        stringByteBuf.release();
-        return Double.parseDouble(aString.trim());
-    }
-
     public static UUID writeUUID(ByteBuf byteBuf){
         UUID requestId = UUID.randomUUID();
         writeUUID(byteBuf, requestId);
         return requestId;
     }
+
 
     public static void writeDate(ByteBuf byteBuf, LocalDate localDate){
         byte[] dateBytes =  DATE_FORMAT.format(localDate).getBytes(StandardCharsets.UTF_8);
@@ -79,5 +73,6 @@ public class ByteBufUtils {
         byteBuf.readBytes(itemNameByte);
         return new String(itemNameByte).trim();
     }
+
 
 }

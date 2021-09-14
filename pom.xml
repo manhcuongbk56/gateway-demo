@@ -11,8 +11,6 @@
     <modules>
         <module>client</module>
         <module>gateway</module>
-        <module>simpleserver</module>
-        <module>common</module>
     </modules>
 
     <properties>
