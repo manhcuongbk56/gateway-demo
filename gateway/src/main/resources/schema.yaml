@@ -10,53 +10,53 @@ A3:
       dataType: TEXT
       length: 12
     - name: IssueSeqNo
-      dataType: TEXT
-      length: 12
+      dataType: NUMBER
+      length: 4
     - name: BoardId
       dataType: TEXT
       length: 2
     - name: CurrentPrice
       dataType: NUMBER
-      length: 10
-    - name: InformationType
+      length: 5
+    - name: TradingVolumeByTick
+      dataType: NUMBER
+      length: 7
+    - name: SessionID
       dataType: TEXT
-      length: 10
-    - name: InformationType
+      length: 2
+    - name: TradingTime
       dataType: TEXT
-      length: 10
-    - name: InformationType
+      length: 8
+    - name: OpeningPrice
+      dataType: NUMBER
+      length: 5
+    - name: HighPrice
+      dataType: NUMBER
+      length: 5
+    - name: LowPrice
+      dataType: NUMBER
+      length: 5
+    - name: PreviousPrice
+      dataType: NUMBER
+      length: 5
+    - name: AccumulatedTradingVolume
+      dataType: NUMBER
+      length: 8
+    - name: AccumulatedTradingValue
+      dataType: NUMBER
+      length: 11
+    - name: AccumulatedVolumeOfABlockTrading
+      dataType: NUMBER
+      length: 8
+    - name: FinalAskBidTypeCode
       dataType: TEXT
-      length: 10
-    - name: InformationType
+      length: 1
+    - name: RealTimeUpperLimitPrice
+      dataType: NUMBER
+      length: 5
+    - name: RealTimeLowerLimitPrice
+      dataType: NUMBER
+      length: 5
+    - name: EndOfText
       dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
-    - name: InformationType
-      dataType: TEXT
-      length: 10
+      length: 1
