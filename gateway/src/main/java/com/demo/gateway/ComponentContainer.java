@@ -3,10 +3,9 @@ package com.demo.gateway;
 
 import com.demo.gateway.business.BusinessHandler;
 import com.demo.gateway.business.SimplePrintOutHandler;
-import com.demo.gateway.decoder.Decoder;
 import com.demo.gateway.decoder.FlatMessageDecoder;
-import com.demo.gateway.schemaloader.SchemaProvider;
-import com.demo.gateway.schemaloader.SimpleYamlSchemaLoader;
+import com.demo.gateway.schema.SchemaProvider;
+import com.demo.gateway.schema.SimpleYamlSchemaLoader;
 import com.demo.gateway.util.DataTypeConstants;
 import lombok.Getter;
 

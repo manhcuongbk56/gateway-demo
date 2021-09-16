@@ -1,6 +1,6 @@
 package com.demo.gateway.exceptions;
 
-import com.demo.gateway.schemaloader.Field;
+import com.demo.gateway.schema.Field;
 import io.netty.buffer.ByteBuf;
 
 public class WrongFormatException extends RuntimeException{

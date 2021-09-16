@@ -1,9 +1,9 @@
 package com.demo.gateway.decoder;
 
 import com.demo.gateway.exceptions.UnknownDataTypeException;
-import com.demo.gateway.schemaloader.Field;
-import com.demo.gateway.schemaloader.Schema;
-import com.demo.gateway.schemaloader.SchemaProvider;
+import com.demo.gateway.schema.Field;
+import com.demo.gateway.schema.Schema;
+import com.demo.gateway.schema.SchemaProvider;
 import com.demo.gateway.utils.ByteBufUtils;
 import io.netty.buffer.ByteBuf;
 

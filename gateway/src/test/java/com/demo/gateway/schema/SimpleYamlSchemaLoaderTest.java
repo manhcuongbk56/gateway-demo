@@ -1,11 +1,9 @@
-package com.demo.gateway.schemaloader;
+package com.demo.gateway.schema;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class SimpleYamlSchemaLoaderTest {
 

@@ -1,6 +1,5 @@
-package com.demo.gateway.schemaloader;
+package com.demo.gateway.schema;
 
-import com.demo.gateway.YamlConfigReader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;

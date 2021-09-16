@@ -1,4 +1,4 @@
-package com.demo.gateway.schemaloader;
+package com.demo.gateway.schema;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

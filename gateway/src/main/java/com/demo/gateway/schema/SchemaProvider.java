@@ -1,6 +1,4 @@
-package com.demo.gateway.schemaloader;
-
-import java.util.List;
+package com.demo.gateway.schema;
 
 public interface SchemaProvider {
 

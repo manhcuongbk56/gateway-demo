@@ -1,4 +1,4 @@
-package com.demo.gateway.schemaloader;
+package com.demo.gateway.schema;
 
 public enum DataType {
 
