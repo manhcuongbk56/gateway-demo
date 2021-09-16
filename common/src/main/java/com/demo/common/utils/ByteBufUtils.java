@@ -74,8 +74,8 @@ public class ByteBufUtils {
         byteBuf.writeBytes(padding);
     }
 
-    public static void writeString(ByteBuf byteBuf, String stockName, int length){
-        byte[] stockNameBytes = stockName.getBytes(StandardCharsets.UTF_8);
+    public static void writeString(ByteBuf byteBuf, String value, int length){
+        byte[] stockNameBytes = value.getBytes(StandardCharsets.UTF_8);
         byte[] padding = new byte[length - stockNameBytes.length];
         Arrays.fill(padding, (byte) ' ');
         byteBuf.writeBytes(stockNameBytes);

@@ -6,3 +6,4 @@ httpClient:
   connectTimeOut: 100
   readTimeout: 100
   writeTimeout: 100
+schemaFile: schema.yaml

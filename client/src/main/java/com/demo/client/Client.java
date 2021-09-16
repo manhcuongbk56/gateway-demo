@@ -32,7 +32,24 @@ public class Client {
         ByteBufUtils.writeString(request, "18", 2);
         ByteBufUtils.writeString(request, "4", 1);
         ByteBufUtils.writeString(request, "issueCode", 12);
-        ByteBufUtils.writeDouble(request, 123d, 4);
+        ByteBufUtils.writeString(request, "12", 4);
+        ByteBufUtils.writeString(request, "aw", 2);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 7);
+        ByteBufUtils.writeString(request, "si", 2);
+        ByteBufUtils.writeString(request, "24h45", 8);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 8);
+        ByteBufUtils.writeString(request, "123.3", 11);
+        ByteBufUtils.writeString(request, "123.3", 8);
+        ByteBufUtils.writeString(request, "a", 1);
+        ByteBufUtils.writeString(request, "023.3", 5);
+        ByteBufUtils.writeString(request, "123.3", 5);
+        ByteBufUtils.writeString(request, "x", 1);
+        send(request);
     }
 
 

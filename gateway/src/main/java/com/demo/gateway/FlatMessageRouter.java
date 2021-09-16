@@ -39,12 +39,12 @@ public class FlatMessageRouter extends ChannelInboundHandlerAdapter implements M
             return;
         }
         Map<String, Object> decodedData = messageDecoder.decode(data);
-
+        routeToProcessor(decodedData);
     }
 
 
     @Override
-    public CompletionStage<Object> routeToProcessor(HashMap<String, Object> data) {
+    public CompletionStage<Object> routeToProcessor(Map<String, Object> data) {
         String dataType = (String) data.get(FieldConstants.DATA_TYPE);
         return handlerMap.get(dataType).handle(data);
     }
