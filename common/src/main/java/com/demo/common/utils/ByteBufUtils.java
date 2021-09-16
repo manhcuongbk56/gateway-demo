@@ -74,6 +74,22 @@ public class ByteBufUtils {
         byteBuf.writeBytes(padding);
     }
 
+    public static void writeString(ByteBuf byteBuf, String stockName, int length){
+        byte[] stockNameBytes = stockName.getBytes(StandardCharsets.UTF_8);
+        byte[] padding = new byte[length - stockNameBytes.length];
+        Arrays.fill(padding, (byte) ' ');
+        byteBuf.writeBytes(stockNameBytes);
+        byteBuf.writeBytes(padding);
+    }
+
+
+    public static void writeDouble(ByteBuf byteBuf, double doubleNumber, int length){
+        byteBuf.writeDouble(doubleNumber);
+        byte[] padding = new byte[length];
+        Arrays.fill(padding, (byte) ' ');
+        byteBuf.writeBytes(padding);
+    }
+
     public static String read20BytesString(ByteBuf byteBuf){
         byte[] itemNameByte = new byte[20];
         byteBuf.readBytes(itemNameByte);

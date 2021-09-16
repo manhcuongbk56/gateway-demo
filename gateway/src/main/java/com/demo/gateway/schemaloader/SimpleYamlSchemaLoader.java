@@ -4,7 +4,6 @@ import com.demo.gateway.YamlConfigReader;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.google.inject.Inject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +17,6 @@ public class SimpleYamlSchemaLoader implements SchemaProvider{
 
     private Map<String, Schema> schemas;
 
-    @Inject
     public SimpleYamlSchemaLoader(String file) throws IOException {
         this.schemas = readYamlInResources(file);
     }

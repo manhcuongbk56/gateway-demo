@@ -22,24 +22,9 @@ public class ClientMain {
             clients.add(clientManager.newClient());
         }
         log.warn("Done create {} clients, connected to server", CLIENT_QUANTITY);
-        List<CompletableFuture> responseFutures = new ArrayList<>();
         for (Client client : clients) {
-            responseFutures.add(client.getStockPrice("LOL")
-                    .thenAccept(rs -> {
-                        log.info("Stock price Response: {}", rs);
-                    })
-                    .exceptionally(ex -> {
-                        log.error("Error happen.", ex);
-                        return null;
-                    }));
+            client.fillOrder();
         }
-        CompletableFuture[] all = new CompletableFuture[responseFutures.size()];
-        for (int i = 0; i < responseFutures.size(); i++) {
-            all[i] = responseFutures.get(i);
-        }
-        //Gather all response futures, call get => only return when all request is done.
-        CompletableFuture.allOf(all).get();
-        log.warn("RECEIVE ALL RESPONSE");
         //never exit to monitoring connected client on gateway server
         while (true) {
             Thread.sleep(2000l);

@@ -14,7 +14,7 @@ public class GatewayMain {
         try {
             GatewayConfiguration config = configReader.readYamlInResources("config.yaml");
             server.start(config);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             log.error("Error happen when read config file", e);
             System.exit(99);
         }

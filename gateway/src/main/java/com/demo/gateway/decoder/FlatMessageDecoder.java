@@ -5,7 +5,6 @@ import com.demo.gateway.schemaloader.Field;
 import com.demo.gateway.schemaloader.Schema;
 import com.demo.gateway.schemaloader.SchemaProvider;
 import com.demo.gateway.utils.ByteBufUtils;
-import com.google.inject.Inject;
 import io.netty.buffer.ByteBuf;
 
 import java.util.HashMap;
@@ -20,7 +19,6 @@ public class FlatMessageDecoder implements Decoder {
 
     private SchemaProvider schemaProvider;
 
-    @Inject
     public FlatMessageDecoder(SchemaProvider schemaProvider) {
         this.schemaProvider = schemaProvider;
     }

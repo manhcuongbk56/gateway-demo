@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 public class GatewayConfiguration {
 
     private HttpClientConfiguration httpClient;
+    private String schemaFile;
 
     //    @JsonFormat(shape = JsonFormat.Shape.STRING)
     public enum ClientType {
